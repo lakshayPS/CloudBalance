@@ -9,7 +9,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/dashboard/user-management");
     }
   }, [isAuthenticated, navigate]);
 

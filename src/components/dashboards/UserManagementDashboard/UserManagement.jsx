@@ -1,44 +1,40 @@
 import { useState, useEffect } from "react";
-import { rows } from "./components/userData";
 
-const UserManagement = ({ mode, selectedRow }) => {
+const UserManagement = ({ mode, selectedRow, tableRows, setTableRows }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [roles, setRoles] = useState("");
 
   useEffect(() => {
     if (mode === "edit" && selectedRow) {
       setFirstName(selectedRow.firstName);
       setLastName(selectedRow.lastName);
       setEmail(selectedRow.email);
-      setRole(selectedRow.roles);
+      setRoles(selectedRow.roles);
     }
   }, [mode, selectedRow]);
-
-  function createData(firstName, lastName, email, roles) {
-    return { firstName, lastName, email, roles };
-  }
 
   const addRow = (e) => {
     e.preventDefault();
 
-    const newUser = createData(firstName, lastName, email, role);
+    const newUser = { firstName, lastName, email, roles };
 
     if (mode === "edit") {
-      const index = rows.findIndex((r) => r.email === selectedRow.email);
-      if (index !== -1) rows[index] = newUser;
+      // update inside tableRows array
+      setTableRows((prev) =>
+        prev.map((r) => (r.email === selectedRow.email ? newUser : r))
+      );
     } else {
-      rows.push(newUser);
+      // push new user
+      setTableRows((prev) => [...prev, newUser]);
     }
-
-    console.log("Updated Rows:", rows);
   };
 
   return (
     <div className="w-auto bg-white my-3 shadow-2xs rounded-xs">
       <div className="flex">
-        <div className="w-1/4 mb-4 p-4">
+        <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
             First Name <span className="text-red-500 ml-1">*</span>
           </label>
@@ -51,7 +47,7 @@ const UserManagement = ({ mode, selectedRow }) => {
           />
         </div>
 
-        <div className="w-1/4 mb-4 p-4">
+        <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
             Last Name <span className="text-red-500 ml-1">*</span>
           </label>
@@ -66,7 +62,7 @@ const UserManagement = ({ mode, selectedRow }) => {
       </div>
 
       <div className="flex">
-        <div className="w-1/4 mb-4 p-4">
+        <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
             Email ID <span className="text-red-500 ml-1">*</span>
           </label>
@@ -79,15 +75,15 @@ const UserManagement = ({ mode, selectedRow }) => {
           />
         </div>
 
-        <div className="w-1/4 mb-4 p-4">
+        <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
             Select Role <span className="text-red-500 ml-1">*</span>
           </label>
           <select
             className="border border-gray-300 rounded-lg p-2 h-10 w-full"
             required
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            value={roles}
+            onChange={(e) => setRoles(e.target.value)}
           >
             <option value="" disabled>
               Select Role
@@ -101,7 +97,7 @@ const UserManagement = ({ mode, selectedRow }) => {
 
       <button
         className={`bg-blue-600 text-white py-2 mb-4 rounded-md font-semibold hover:bg-blue-700 flex ${
-          mode === "edit" ? "w-1/7" : "w-1/16"
+          mode === "edit" ? "w-1/7" : "w-1/6"
         } justify-center cursor-pointer relative left-4 bottom-4`}
         onClick={addRow}
       >

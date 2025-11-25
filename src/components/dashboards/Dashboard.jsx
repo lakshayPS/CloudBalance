@@ -4,6 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import UserTable from "./UserManagementDashboard/components/UserTable";
 import AWSServices from "./AWSServicesDashboard/AWSServices";
 import ServicesProvider from "./AWSServicesDashboard/context/ServicesProvider";
+import UserModal from "./UserManagementDashboard/components/UserModal";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,12 @@ const Dashboard = () => {
         >
           <AddIcon /> <p>Add New User</p>
         </button>
-        {isOpen ? <UserManagement /> : ""}
+        {/* {isOpen ? <UserManagement /> : ""} */}
+        {isOpen ? (
+          <UserModal open={isOpen} handleClose={() => setIsOpen(false)} />
+        ) : (
+          ""
+        )}
 
         <UserTable />
       </div>

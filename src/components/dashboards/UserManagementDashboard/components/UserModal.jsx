@@ -17,7 +17,14 @@ const style = {
   p: 4,
 };
 
-export default function UserModal({ open, handleClose, mode, selectedRow }) {
+export default function UserModal({
+  open,
+  handleClose,
+  mode,
+  selectedRow,
+  tableRows,
+  setTableRows,
+}) {
   return (
     <div>
       <Modal
@@ -32,7 +39,12 @@ export default function UserModal({ open, handleClose, mode, selectedRow }) {
             {mode === "edit" ? "Edit User" : "Add User"}
           </Typography>
 
-          <UserManagement selectedRow={selectedRow} mode={mode} />
+          <UserManagement
+            selectedRow={selectedRow}
+            mode={mode}
+            tableRows={tableRows}
+            setTableRows={setTableRows}
+          />
         </Box>
       </Modal>
     </div>
