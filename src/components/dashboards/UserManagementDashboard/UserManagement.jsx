@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, updateUser } from "../../../actions";
+// import { useNavigate } from "react-router";
 
-const UserManagement = ({ mode, selectedRow, tableRows, setTableRows }) => {
+const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,20 +18,47 @@ const UserManagement = ({ mode, selectedRow, tableRows, setTableRows }) => {
     }
   }, [mode, selectedRow]);
 
-  const addRow = (e) => {
+  const users = useSelector((state) => state.modifyTable.users);
+  // const open = useSelector((state) => state.toggleModal.open);
+
+  const dispatch = useDispatch();
+
+  const handleAdd = (e) => {
     e.preventDefault();
 
-    const newUser = { firstName, lastName, email, roles };
+    const exists = users.some((user) => user.email === email);
 
-    if (mode === "edit") {
-      // update inside tableRows array
-      setTableRows((prev) =>
-        prev.map((r) => (r.email === selectedRow.email ? newUser : r))
-      );
-    } else {
-      // push new user
-      setTableRows((prev) => [...prev, newUser]);
+    if (exists) {
+      alert("User with this email already exists!");
+      return;
     }
+
+    const newUser = {
+      id: users.length + 1,
+      firstName,
+      lastName,
+      email,
+      roles,
+    };
+
+    dispatch(addUser(newUser));
+
+    handleClose();
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
+    const updatedUser = {
+      id: selectedRow.id, // keep original ID
+      firstName,
+      lastName,
+      email,
+      roles,
+    };
+
+    dispatch(updateUser(updatedUser));
+    handleClose();
   };
 
   return (
@@ -99,9 +129,10 @@ const UserManagement = ({ mode, selectedRow, tableRows, setTableRows }) => {
         className={`bg-blue-600 text-white py-2 mb-4 rounded-md font-semibold hover:bg-blue-700 flex ${
           mode === "edit" ? "w-1/7" : "w-1/6"
         } justify-center cursor-pointer relative left-4 bottom-4`}
-        onClick={addRow}
+        // onClick={addRow}
+        onClick={mode === "edit" ? handleUpdate : handleAdd}
       >
-        {mode === "edit" ? "Update" : "Submit"}
+        {mode === "edit" ? "Update" : "Add"}
       </button>
     </div>
   );

@@ -11,7 +11,7 @@ export default function ServicesTable({ rows, columns }) {
     <div className="flex items-center justify-center mx-auto my-6">
       <Paper
         sx={{
-          display: "inline-block", // FIX: gives parent intrinsic width
+          display: "inline-block",
           p: 1,
           overflow: "hidden",
         }}

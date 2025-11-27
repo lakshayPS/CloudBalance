@@ -10,7 +10,6 @@ import CostExplorer from "./components/dashboards/CostExplorerDashboard/CostExpl
 import ServicesProvider from "./components/dashboards/AWSServicesDashboard/context/ServicesProvider";
 import SideBar from "./components/layout/SideBar";
 import Dashboard from "./components/dashboards/Dashboard";
-// change
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {

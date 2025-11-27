@@ -17,14 +17,7 @@ const style = {
   p: 4,
 };
 
-export default function UserModal({
-  open,
-  handleClose,
-  mode,
-  selectedRow,
-  tableRows,
-  setTableRows,
-}) {
+export default function UserModal({ open, handleClose, mode, selectedRow }) {
   return (
     <div>
       <Modal
@@ -42,8 +35,8 @@ export default function UserModal({
           <UserManagement
             selectedRow={selectedRow}
             mode={mode}
-            tableRows={tableRows}
-            setTableRows={setTableRows}
+            open={open}
+            handleClose={handleClose}
           />
         </Box>
       </Modal>

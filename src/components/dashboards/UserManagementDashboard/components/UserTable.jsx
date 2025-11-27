@@ -9,7 +9,9 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import EditIcon from "@mui/icons-material/Edit";
 import UserModal from "./UserModal";
-import { columns, rows } from "./userData";
+import { columns } from "./userData";
+import { useSelector } from "react-redux";
+// import { addUser } from "../../../../actions";
 
 export default function UserTable() {
   const [page, setPage] = useState(0);
@@ -17,9 +19,9 @@ export default function UserTable() {
 
   const [open, setOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [tableRows, setTableRows] = useState(rows);
-
   const [mode, setMode] = useState("add");
+
+  const users = useSelector((state) => state.modifyTable.users);
 
   const openEditModal = (row) => {
     setSelectedRow(row);
@@ -27,19 +29,10 @@ export default function UserTable() {
     setOpen(true);
   };
 
-  const handleChangePage = (e, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", p: 1 }}>
       <TableContainer sx={{ maxHeight: 440 }}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -58,15 +51,15 @@ export default function UserTable() {
               ))}
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {tableRows
+            {users
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, idx) => (
-                <TableRow hover tabIndex={-1} key={idx}>
+                <TableRow hover key={idx}>
                   {columns.map((column) => {
                     const value = row[column.id];
 
-                    // Action column (Edit Icon)
                     if (column.id === "action") {
                       return (
                         <TableCell key={column.id}>
@@ -78,7 +71,6 @@ export default function UserTable() {
                       );
                     }
 
-                    // Other columns
                     return <TableCell key={column.id}>{value}</TableCell>;
                   })}
                 </TableRow>
@@ -86,14 +78,18 @@ export default function UserTable() {
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={tableRows.length}
+        count={users.length}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={(e, newPage) => setPage(newPage)}
+        onRowsPerPageChange={(e) => {
+          setRowsPerPage(+e.target.value);
+          setPage(0);
+        }}
       />
 
       <UserModal
@@ -101,8 +97,6 @@ export default function UserTable() {
         handleClose={() => setOpen(false)}
         mode={mode}
         selectedRow={selectedRow}
-        tableRows={tableRows}
-        setTableRows={setTableRows}
       />
     </Paper>
   );
