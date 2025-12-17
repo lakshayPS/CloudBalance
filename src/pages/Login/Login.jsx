@@ -1,11 +1,16 @@
 import { useNavigate } from "react-router";
 import CloudKeeper from "../../assets/CloudKeeper.png";
 import { useEffect, useState } from "react";
+import { loginUser } from "../../services/authServices";
+import { loginSuccess } from "../../actions";
+import { useDispatch } from "react-redux";
 
 const Login = ({ onLogin, isAuthenticated }) => {
   const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState(null);
+  const [userPassword, setUserPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -13,13 +18,29 @@ const Login = ({ onLogin, isAuthenticated }) => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    localStorage.setItem("userEmail", userEmail);
-    localStorage.setItem("userPassword", userPassword);
-    onLogin();
-    navigate("/dashboard");
+    try {
+      const response = await loginUser({
+        email: userEmail,
+        password: userPassword,
+      });
+
+      // Save token and user details in localStorage
+      const { token, userName, role } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify({ userName, role }));
+
+      dispatch(loginSuccess(token, userName, role));
+
+      onLogin(); // update your app state
+      navigate("/dashboard/user-management"); // redirect based on role or page
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error.response?.data?.message || "Login failed");
+    }
   };
+
   return (
     <div className="flex items-center justify-center h-screen w-screen ">
       <div className="w-1/3 p-8 bg-white rounded-xl shadow-xl">
@@ -58,6 +79,8 @@ const Login = ({ onLogin, isAuthenticated }) => {
               onChange={(e) => setUserPassword(e.target.value)}
             />
           </div>
+
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
           <button
             type="submit"

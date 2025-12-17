@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -10,8 +10,8 @@ import TableRow from "@mui/material/TableRow";
 import EditIcon from "@mui/icons-material/Edit";
 import UserModal from "./UserModal";
 import { columns } from "./userData";
-import { useSelector } from "react-redux";
-// import { addUser } from "../../../../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUsers } from "../../../../actions";
 
 export default function UserTable() {
   const [page, setPage] = useState(0);
@@ -28,6 +28,12 @@ export default function UserTable() {
     setMode("edit");
     setOpen(true);
   };
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", p: 1 }}>

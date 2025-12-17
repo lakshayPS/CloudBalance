@@ -1,11 +1,11 @@
 import EditIcon from "@mui/icons-material/Edit";
 
-function createData(firstName, lastName, email, roles, lastLogin) {
+function createData(firstName, lastName, email, role, lastLogin) {
   return {
     firstName,
     lastName,
     email,
-    roles,
+    role,
     lastLogin,
     action: <EditIcon sx={{ color: "#3436b7", cursor: "pointer" }} />,
   };
@@ -15,8 +15,7 @@ export const columns = [
   { id: "firstName", label: "First Name", minWidth: 100 },
   { id: "lastName", label: "Last Name", minWidth: 120 },
   { id: "email", label: "Email", minWidth: 170 },
-  { id: "roles", label: "Roles", minWidth: 120 },
-  { id: "lastLogin", label: "Last Login", minWidth: 80 },
+  { id: "role", label: "Role", minWidth: 120 },
   { id: "action", label: "Action", minWidth: 50 },
 ];
 

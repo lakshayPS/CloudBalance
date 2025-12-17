@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloudKeeper from "../../assets/CloudKeeper.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -7,6 +7,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = ({ toggleSidebar, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -14,6 +15,17 @@ const Header = ({ toggleSidebar, onLogout }) => {
   const navigate = useNavigate();
   const menu = ["Lens", "Tuner", "CK-All"];
   const open = Boolean(anchorEl);
+
+  const email = useSelector((state) => state.authReducer.email);
+  const users = useSelector((state) => state.modifyTable.users);
+
+  const firstName = users.find((u) => u.email === email)?.firstName || "";
+
+  useEffect(() => {
+    if (firstName) {
+      localStorage.setItem("username", firstName);
+    }
+  }, [firstName]);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -65,7 +77,7 @@ const Header = ({ toggleSidebar, onLogout }) => {
         </div>
       </div>
       <div className="w-1/4 flex items-center justify-around">
-        <div className="flex items-center w-1/2 justify-between">
+        <div className="flex items-center w-1/3 justify-evenly">
           <AccountCircleOutlinedIcon
             color="info"
             fontSize="large"
@@ -74,7 +86,7 @@ const Header = ({ toggleSidebar, onLogout }) => {
           <div>
             <p>Welcome,</p>
             <p className="text-blue-600 font-bold flex items-center">
-              Lakshay Pratap Singh{" "}
+              <p className=" mr-1">{firstName}</p>
               <InfoOutlinedIcon className="cursor-pointer" />
             </p>
           </div>
