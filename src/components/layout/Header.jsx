@@ -77,7 +77,7 @@ const Header = ({ toggleSidebar, onLogout }) => {
         </div>
       </div>
       <div className="w-1/4 flex items-center justify-around">
-        <div className="flex items-center w-1/3 justify-evenly">
+        <div className="flex items-center w-1/2 justify-between">
           <AccountCircleOutlinedIcon
             color="info"
             fontSize="large"
@@ -86,7 +86,7 @@ const Header = ({ toggleSidebar, onLogout }) => {
           <div>
             <p>Welcome,</p>
             <p className="text-blue-600 font-bold flex items-center">
-              <p className=" mr-1">{firstName}</p>
+              <p className="">Lakshay Pratap Singh</p>
               <InfoOutlinedIcon className="cursor-pointer" />
             </p>
           </div>
