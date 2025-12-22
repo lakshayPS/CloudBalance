@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, updateUser } from "../../../actions";
+import { getAllAccounts } from "../../../services/authServices";
 
 const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [firstName, setFirstName] = useState("");
@@ -9,6 +10,9 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
 
+  const [accounts, setAccounts] = useState([]);
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+
   useEffect(() => {
     if (mode === "edit" && selectedRow) {
       editSetter(selectedRow);
@@ -16,6 +20,19 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
       resetForm();
     }
   }, [mode, selectedRow]);
+
+  useEffect(() => {
+    if (role === "ROLE_CUSTOMER") {
+      fetchAccounts();
+    } else {
+      setAccounts([]);
+      setSelectedAccounts([]);
+    }
+  }, [role]);
+
+  useEffect(() => {
+    console.log("selectedAccounts: ", selectedAccounts);
+  }, [selectedAccounts]);
 
   const resetForm = () => {
     setFirstName("");
@@ -77,6 +94,33 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
 
     dispatch(updateUser(updatedUser));
     handleClose();
+  };
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await getAllAccounts();
+
+      const data = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+        ? response?.data
+        : Array.isArray(response?.data?.data)
+        ? response?.data?.data
+        : [];
+
+      setAccounts(data);
+    } catch (error) {
+      console.error("Error fetching accounts", error);
+      setAccounts([]);
+    }
+  };
+
+  const handleAccountToggle = (accountId) => {
+    setSelectedAccounts((prev) =>
+      prev.includes(accountId)
+        ? prev.filter((id) => id !== accountId)
+        : [...prev, accountId]
+    );
   };
 
   return (
@@ -170,6 +214,44 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
             <option value="ROLE_READONLY">ROLE_READONLY</option>
           </select>
         </div>
+
+        {role === "ROLE_CUSTOMER" && (
+          <div className="w-full mb-4 p-4">
+            <label className="flex items-center mb-2 font-semibold">
+              Assign Accounts <span className="text-red-500 ml-1">*</span>
+            </label>
+
+            <div className="max-h-40 overflow-y-auto border rounded-lg p-3">
+              {accounts?.length === 0 && (
+                <p className="text-sm text-gray-500">No accounts available</p>
+              )}
+
+              {accounts?.map((acc) => (
+                <div key={acc.accId} className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    className="mr-2"
+                    checked={selectedAccounts.includes(acc.accId)}
+                    onChange={() => handleAccountToggle(acc.accId)}
+                  />
+
+                  <span className="text-sm">
+                    {acc.accName}
+                    <span
+                      className={`ml-2 text-xs font-semibold ${
+                        acc.accStatus === "ORPHANED"
+                          ? "text-green-600"
+                          : "text-orange-600"
+                      }`}
+                    >
+                      ({acc.accStatus})
+                    </span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <button
