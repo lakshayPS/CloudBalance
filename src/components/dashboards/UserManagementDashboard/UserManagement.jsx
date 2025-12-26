@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, updateUser } from "../../../actions";
 import { getAllAccounts } from "../../../services/authServices";
+import { South } from "@mui/icons-material";
 
 const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +13,47 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
 
   const [accounts, setAccounts] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await getAllAccounts();
+
+      const data = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+        ? response?.data
+        : [];
+
+      setAccounts(data);
+
+      // ✅ PRESELECT accounts if editing
+      if (mode === "edit" && selectedRow?.email) {
+        const preselected = data
+          .filter((acc) => acc.userEmails?.includes(selectedRow?.email))
+          .map((acc) => acc.accId);
+
+        setSelectedAccounts(preselected);
+      }
+    } catch (error) {
+      console.error("Error fetching accounts", error);
+      setAccounts([]);
+    }
+  };
+
+  const editSetter = (selectedRow) => {
+    setFirstName(selectedRow.firstName);
+    setLastName(selectedRow.lastName);
+    setEmail(selectedRow.email);
+    setRole(selectedRow.role);
+  };
+
+  const resetForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setRole("");
+    setPassword("");
+  };
 
   useEffect(() => {
     if (mode === "edit" && selectedRow) {
@@ -34,84 +76,88 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
     console.log("selectedAccounts: ", selectedAccounts);
   }, [selectedAccounts]);
 
-  const resetForm = () => {
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setRole("");
-    setPassword("");
-  };
-
   const users = useSelector((state) => state.modifyTable.users);
 
   const dispatch = useDispatch();
 
-  const editSetter = (selectedRow) => {
-    setFirstName(selectedRow.firstName);
-    setLastName(selectedRow.lastName);
-    setEmail(selectedRow.email);
-    setRole(selectedRow.role);
-  };
+  // const handleAdd = (e) => {
+  //   e.preventDefault();
 
-  const handleAdd = (e) => {
+  //   const exists = users.some(
+  //     (user) => user.email.toLowerCase() === email.toLowerCase()
+  //   );
+
+  //   if (exists) {
+  //     alert("User with this email already exists!");
+  //     return;
+  //   }
+
+  //   const newUser = {
+  //     id: users.length + 1,
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     role,
+  //     password,
+  //   };
+
+  //   console.log(newUser);
+
+  //   dispatch(addUser(newUser));
+
+  //   handleClose();
+  // };
+
+  // const handleUpdate = (e) => {
+  //   e.preventDefault();
+
+  //   const updatedUser = {
+  //     id: selectedRow.id,
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     role,
+  //   };
+
+  //   dispatch(updateUser(updatedUser));
+  //   handleClose();
+  // };
+
+  const handleAdd = async (e) => {
     e.preventDefault();
 
-    const exists = users.some(
-      (user) => user.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if (exists) {
-      alert("User with this email already exists!");
-      return;
-    }
-
-    const newUser = {
-      id: users.length + 1,
-      firstName,
-      lastName,
-      email,
-      role,
-      password,
-    };
-
-    console.log(newUser);
-
-    dispatch(addUser(newUser));
-
-    handleClose();
-  };
-
-  const handleUpdate = (e) => {
-    e.preventDefault();
-
-    const updatedUser = {
-      id: selectedRow.id,
-      firstName,
-      lastName,
-      email,
-      role,
-    };
-
-    dispatch(updateUser(updatedUser));
-    handleClose();
-  };
-
-  const fetchAccounts = async () => {
     try {
-      const response = await getAllAccounts();
+      await dispatch(
+        addUser(
+          { firstName, lastName, email, role, password },
+          selectedAccounts
+        )
+      );
+      handleClose();
+    } catch {
+      console.error("Add user failed");
+    }
+  };
 
-      const data = Array.isArray(response)
-        ? response
-        : Array.isArray(response?.data)
-        ? response?.data
-        : Array.isArray(response?.data?.data)
-        ? response?.data?.data
-        : [];
+  const handleUpdate = async (e) => {
+    e.preventDefault();
 
-      setAccounts(data);
-    } catch (error) {
-      console.error("Error fetching accounts", error);
-      setAccounts([]);
+    try {
+      await dispatch(
+        updateUser(
+          {
+            id: selectedRow.id,
+            firstName,
+            lastName,
+            email,
+            role,
+          },
+          selectedAccounts
+        )
+      );
+      handleClose();
+    } catch {
+      console.error("Update failed");
     }
   };
 

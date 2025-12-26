@@ -2,6 +2,7 @@ import axios from "axios";
 
 const PUBLIC_URL = "http://localhost:8080/auth"; // Replace with your backend URL
 const PROTECTED_URL = "http://localhost:8080/users";
+const PROTECTED_URL2 = "http://localhost:8080/auth";
 const ONBOARDING_URL = "http://localhost:8080/api/accounts";
 
 const getAuthHeader = () => {
@@ -10,7 +11,7 @@ const getAuthHeader = () => {
 };
 
 export const registerUser = async (user) => {
-  const response = await axios.post(`${PROTECTED_URL}/register`, user, {
+  const response = await axios.post(`${PROTECTED_URL2}/register`, user, {
     headers: getAuthHeader(),
   });
 

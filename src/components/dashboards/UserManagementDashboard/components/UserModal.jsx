@@ -19,6 +19,7 @@ const style = {
 
 export default function UserModal({ open, handleClose, mode, selectedRow }) {
   console.log("selected rowww: ", selectedRow);
+
   return (
     <div>
       <Modal
