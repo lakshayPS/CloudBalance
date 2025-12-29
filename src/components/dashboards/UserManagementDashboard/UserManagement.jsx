@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, updateUser } from "../../../actions";
-import { getAllAccounts } from "../../../services/authServices";
-import { South } from "@mui/icons-material";
+import {
+  getAllAccounts,
+  getAssignedAccountsByUserId,
+} from "../../../services/authServices";
 
 const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [firstName, setFirstName] = useState("");
@@ -26,7 +28,6 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
 
       setAccounts(data);
 
-      // ✅ PRESELECT accounts if editing
       if (mode === "edit" && selectedRow?.email) {
         const preselected = data
           .filter((acc) => acc.userEmails?.includes(selectedRow?.email))
@@ -37,6 +38,19 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
     } catch (error) {
       console.error("Error fetching accounts", error);
       setAccounts([]);
+    }
+  };
+
+  const fetchAssignedAccounts = async (id) => {
+    try {
+      if (!id) return;
+
+      const response = await getAssignedAccountsByUserId(id);
+      const data = Array.isArray(response?.data) ? response.data : [];
+
+      setSelectedAccounts(data.map((acc) => acc.accId));
+    } catch (err) {
+      console.error("Error while fetching accounts: ", err);
     }
   };
 
@@ -73,55 +87,12 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   }, [role]);
 
   useEffect(() => {
-    console.log("selectedAccounts: ", selectedAccounts);
-  }, [selectedAccounts]);
+    fetchAssignedAccounts(selectedRow?.id);
+  }, [selectedRow]);
 
   const users = useSelector((state) => state.modifyTable.users);
 
   const dispatch = useDispatch();
-
-  // const handleAdd = (e) => {
-  //   e.preventDefault();
-
-  //   const exists = users.some(
-  //     (user) => user.email.toLowerCase() === email.toLowerCase()
-  //   );
-
-  //   if (exists) {
-  //     alert("User with this email already exists!");
-  //     return;
-  //   }
-
-  //   const newUser = {
-  //     id: users.length + 1,
-  //     firstName,
-  //     lastName,
-  //     email,
-  //     role,
-  //     password,
-  //   };
-
-  //   console.log(newUser);
-
-  //   dispatch(addUser(newUser));
-
-  //   handleClose();
-  // };
-
-  // const handleUpdate = (e) => {
-  //   e.preventDefault();
-
-  //   const updatedUser = {
-  //     id: selectedRow.id,
-  //     firstName,
-  //     lastName,
-  //     email,
-  //     role,
-  //   };
-
-  //   dispatch(updateUser(updatedUser));
-  //   handleClose();
-  // };
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -170,7 +141,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   };
 
   return (
-    <div className="w-auto bg-white my-3 shadow-2xs rounded-xs">
+    <div className="w-full bg-white my-3 shadow-2xs rounded-xs">
       <div className="flex">
         <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
@@ -264,7 +235,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
         {role === "ROLE_CUSTOMER" && (
           <div className="w-full mb-4 p-4">
             <label className="flex items-center mb-2 font-semibold">
-              Assign Accounts <span className="text-red-500 ml-1">*</span>
+              Assign Accounts
             </label>
 
             <div className="max-h-40 overflow-y-auto border rounded-lg p-3">

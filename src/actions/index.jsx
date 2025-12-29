@@ -10,7 +10,7 @@ export const SET_USERS = "setUsers";
 export const fetchUsers = () => async (dispatch) => {
   try {
     const response = await getAllUsers();
-    console.log("responseeeee: ", response);
+    // console.log("responseeeee: ", response);
     const mappedUsers = response?.data.map((user, index) => {
       return {
         id: index + 1,
@@ -35,7 +35,7 @@ export const addUser =
   async (dispatch) => {
     try {
       const response = await registerUser(user); // creates the user
-      const newUser = response?.data;
+      const newUser = response;
 
       // Assign accounts if ROLE_CUSTOMER
       console.log("newuserrrr: ", newUser);
@@ -61,7 +61,10 @@ export const updateUser =
       const updatedUser = response?.data || response;
 
       // Assign accounts if ROLE_CUSTOMER
-      if (user.role === "ROLE_CUSTOMER") {
+      console.log("updateddddd  userrr: ", updatedUser);
+      console.log("selectedAccountss: ", selectedAccounts);
+
+      if (user.role === "ROLE_CUSTOMER" && selectedAccounts.length > 0) {
         await assignAccountsToUser(updatedUser.id, selectedAccounts);
       }
 

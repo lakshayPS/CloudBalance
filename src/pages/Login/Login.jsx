@@ -26,15 +26,14 @@ const Login = ({ onLogin, isAuthenticated }) => {
         password: userPassword,
       });
 
-      // Save token and user details in localStorage
       const { token, userName, role } = response.data;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify({ userName, role }));
 
       dispatch(loginSuccess(token, userName, role));
 
-      onLogin(); // update your app state
-      navigate("/dashboard/user-management"); // redirect based on role or page
+      onLogin();
+      navigate("/dashboard/user-management");
     } catch (error) {
       console.error(error);
       setErrorMessage(error.response?.data?.message || "Login failed");

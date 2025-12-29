@@ -7,6 +7,7 @@ const ONBOARDING_URL = "http://localhost:8080/api/accounts";
 
 const getAuthHeader = () => {
   const token = localStorage.getItem("token");
+  // console.log("tokennn: ", token);
   return { Authorization: `Bearer ${token}` };
 };
 
@@ -34,6 +35,7 @@ export const getAllUsers = () => {
   return axios.get(`${PROTECTED_URL}/getAllUsers`, {
     headers: getAuthHeader(),
   });
+  // return axios.get(`${PROTECTED_URL}/getAllUsers`);
 };
 
 export const getAllAccounts = () => {
@@ -43,10 +45,18 @@ export const getAllAccounts = () => {
 };
 
 export const assignAccountsToUser = (userId, accIds) => {
+  console.log("userId: ", userId, " and accIds: ", accIds);
   return axios.post(
     `http://localhost:8080/api/accounts/users/${userId}/assign-accounts`,
     {
-      accIds,
-    }
+      accIds: accIds,
+    },
+    { headers: getAuthHeader() }
   );
+};
+
+export const getAssignedAccountsByUserId = (userId) => {
+  return axios.get(`${ONBOARDING_URL}/users/${userId}/accounts`, {
+    headers: getAuthHeader(),
+  });
 };
