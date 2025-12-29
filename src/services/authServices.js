@@ -11,18 +11,36 @@ const getAuthHeader = () => {
   return { Authorization: `Bearer ${token}` };
 };
 
+// export const registerUser = async (user) => {
+//   const response = await axios.post(`${PROTECTED_URL2}/register`, user, {
+//     headers: getAuthHeader(),
+//   });
+
+//   return response.data;
+// };
+
 export const registerUser = async (user) => {
-  const response = await axios.post(`${PROTECTED_URL2}/register`, user, {
+  const response = await axios.post(`${PROTECTED_URL}/addUser`, user, {
     headers: getAuthHeader(),
   });
 
   return response.data;
 };
 
-export const update = async (user) => {
-  const response = await axios.put(`${PROTECTED_URL}/updateUser`, user, {
-    headers: getAuthHeader(),
-  });
+// export const update = async (user) => {
+//   const response = await axios.put(`${PROTECTED_URL}/updateUser`, user, {
+//     headers: getAuthHeader(),
+//   });
+
+//   return response.data;
+// };
+
+export const update = async (userId, payload) => {
+  const response = await axios.post(
+    `${PROTECTED_URL}/editUser/${userId}`,
+    payload,
+    { headers: getAuthHeader() }
+  );
 
   return response.data;
 };

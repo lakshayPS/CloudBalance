@@ -99,14 +99,18 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
 
     try {
       await dispatch(
-        addUser(
-          { firstName, lastName, email, role, password },
-          selectedAccounts
-        )
+        addUser({
+          firstName,
+          lastName,
+          email,
+          role,
+          password,
+          accountIds: role === "ROLE_CUSTOMER" ? selectedAccounts : [],
+        })
       );
       handleClose();
-    } catch {
-      console.error("Add user failed");
+    } catch (err) {
+      console.error("Add user failed", err);
     }
   };
 
@@ -115,20 +119,17 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
 
     try {
       await dispatch(
-        updateUser(
-          {
-            id: selectedRow.id,
-            firstName,
-            lastName,
-            email,
-            role,
-          },
-          selectedAccounts
-        )
+        updateUser(selectedRow.id, {
+          firstName,
+          lastName,
+          email,
+          role,
+          accountIds: role === "ROLE_CUSTOMER" ? selectedAccounts : [],
+        })
       );
       handleClose();
-    } catch {
-      console.error("Update failed");
+    } catch (err) {
+      console.error("Update failed", err);
     }
   };
 
@@ -171,19 +172,6 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
       </div>
 
       <div className="flex">
-        {/* <div className={`w-1/2 mb-4 p-4 ${mode === "edit" ? "hidden" : ""}`}>
-          <label className="flex items-center mb-1">
-            Email ID <span className="text-red-500 ml-1">*</span>
-          </label>
-          <input
-            type="email"
-            className="border border-gray-300 rounded-lg p-2 w-full"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div> */}
-
         <div className="w-1/2 mb-4 p-4">
           <label className="flex items-center mb-1">
             Email ID <span className="text-red-500 ml-1">*</span>

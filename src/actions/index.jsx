@@ -1,25 +1,18 @@
-import {
-  assignAccountsToUser,
-  getAllUsers,
-  registerUser,
-  update,
-} from "../services/authServices";
+import { getAllUsers, registerUser, update } from "../services/authServices";
 
 export const SET_USERS = "setUsers";
 
 export const fetchUsers = () => async (dispatch) => {
   try {
     const response = await getAllUsers();
-    // console.log("responseeeee: ", response);
-    const mappedUsers = response?.data.map((user, index) => {
-      return {
-        id: index + 1,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-      };
-    });
+
+    const mappedUsers = response?.data.map((user, index) => ({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role,
+    }));
 
     dispatch({
       type: SET_USERS,
@@ -30,53 +23,34 @@ export const fetchUsers = () => async (dispatch) => {
   }
 };
 
-export const addUser =
-  (user, selectedAccounts = []) =>
-  async (dispatch) => {
-    try {
-      const response = await registerUser(user); // creates the user
-      const newUser = response;
+export const addUser = (user) => async (dispatch) => {
+  try {
+    const response = await registerUser(user);
+    const newUser = response;
 
-      // Assign accounts if ROLE_CUSTOMER
-      console.log("newuserrrr: ", newUser);
-      if (user.role === "ROLE_CUSTOMER" && selectedAccounts.length > 0) {
-        await assignAccountsToUser(newUser.id, selectedAccounts);
-      }
+    dispatch({
+      type: "addUser",
+      payload: newUser,
+    });
+  } catch (error) {
+    console.error("Add user failed", error);
+    alert("Failed to add user");
+  }
+};
 
-      dispatch({
-        type: "addUser",
-        payload: newUser,
-      });
-    } catch (error) {
-      console.error("Add user failed", error);
-      alert("Failed to add user");
-    }
-  };
+export const updateUser = (userId, userData) => async (dispatch) => {
+  try {
+    const updatedUser = await update(userId, userData);
 
-export const updateUser =
-  (user, selectedAccounts = []) =>
-  async (dispatch) => {
-    try {
-      const response = await update(user); // updates the user
-      const updatedUser = response?.data || response;
-
-      // Assign accounts if ROLE_CUSTOMER
-      console.log("updateddddd  userrr: ", updatedUser);
-      console.log("selectedAccountss: ", selectedAccounts);
-
-      if (user.role === "ROLE_CUSTOMER" && selectedAccounts.length > 0) {
-        await assignAccountsToUser(updatedUser.id, selectedAccounts);
-      }
-
-      dispatch({
-        type: "updateUser",
-        payload: updatedUser,
-      });
-    } catch (error) {
-      console.error("Update failed", error);
-      alert("Failed to update user");
-    }
-  };
+    dispatch({
+      type: "updateUser",
+      payload: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update failed", error);
+    throw error;
+  }
+};
 
 export const toggleModal = () => ({
   type: "toggleModal",
