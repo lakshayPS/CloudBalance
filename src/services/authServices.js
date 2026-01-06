@@ -78,3 +78,15 @@ export const getAssignedAccountsByUserId = (userId) => {
     headers: getAuthHeader(),
   });
 };
+
+export const createAccount = (accountId, accountName, roleArn) => {
+  const payload = {
+    accId: Number(accountId),
+    accName: accountName,
+    iamARN: roleArn,
+  };
+
+  return axios.post(`http://localhost:8080/api/accounts/create`, payload, {
+    headers: getAuthHeader(),
+  });
+};
