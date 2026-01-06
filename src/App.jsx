@@ -10,6 +10,7 @@ import CostExplorer from "./components/dashboards/CostExplorerDashboard/CostExpl
 import ServicesProvider from "./components/dashboards/AWSServicesDashboard/context/ServicesProvider";
 import SideBar from "./components/layout/SideBar";
 import Dashboard from "./components/dashboards/Dashboard";
+import { toast, ToastContainer } from "react-toastify";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -19,11 +20,13 @@ function App() {
   const handleLogin = () => {
     setIsAuthenticated(true);
     localStorage.setItem("isAuthenticated", "true");
+    toast.success("Login success!");
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.clear();
+    toast.success("Logged out successfully!");
   };
   return (
     <>
@@ -63,6 +66,7 @@ function App() {
           {/* <Layout /> */}
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </>
   );
 }

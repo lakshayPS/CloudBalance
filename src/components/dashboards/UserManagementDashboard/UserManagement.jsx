@@ -5,6 +5,7 @@ import {
   getAllAccounts,
   getAssignedAccountsByUserId,
 } from "../../../services/authServices";
+import { toast } from "react-toastify";
 
 const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [firstName, setFirstName] = useState("");
@@ -37,6 +38,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
       }
     } catch (error) {
       console.error("Error fetching accounts", error);
+      toast.error("Error fetching accounts");
       setAccounts([]);
     }
   };

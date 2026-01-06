@@ -1,7 +1,8 @@
 import React from "react";
+import Dashboard from "./components/Dashboard";
 
 const CostExplorer = () => {
-  return <div>CostExplorer</div>;
+  return <Dashboard />;
 };
 
 export default CostExplorer;

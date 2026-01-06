@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { getAllUsers, registerUser, update } from "../services/authServices";
 
 export const SET_USERS = "setUsers";
@@ -18,8 +19,8 @@ export const fetchUsers = () => async (dispatch) => {
       type: SET_USERS,
       payload: mappedUsers,
     });
-  } catch (error) {
-    console.error("Error fetching users:", error);
+  } catch {
+    toast.error("Error fetching users");
   }
 };
 
@@ -32,9 +33,8 @@ export const addUser = (user) => async (dispatch) => {
       type: "addUser",
       payload: newUser,
     });
-  } catch (error) {
-    console.error("Add user failed", error);
-    alert("Failed to add user");
+  } catch {
+    toast.error("Failed to add user");
   }
 };
 
@@ -46,9 +46,8 @@ export const updateUser = (userId, userData) => async (dispatch) => {
       type: "updateUser",
       payload: updatedUser,
     });
-  } catch (error) {
-    console.error("Update failed", error);
-    throw error;
+  } catch {
+    toast.error("Failed to update user");
   }
 };
 

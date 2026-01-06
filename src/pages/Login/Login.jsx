@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { loginUser } from "../../services/authServices";
 import { loginSuccess } from "../../actions";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const Login = ({ onLogin, isAuthenticated }) => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  // const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,9 +35,8 @@ const Login = ({ onLogin, isAuthenticated }) => {
 
       onLogin();
       navigate("/dashboard/user-management");
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(error.response?.data?.message || "Login failed");
+    } catch {
+      toast.error("Invalid Credentials");
     }
   };
 
@@ -79,7 +79,7 @@ const Login = ({ onLogin, isAuthenticated }) => {
             />
           </div>
 
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+          {/* {errorMessage && <p className="text-red-500">{errorMessage}</p>} */}
 
           <button
             type="submit"
