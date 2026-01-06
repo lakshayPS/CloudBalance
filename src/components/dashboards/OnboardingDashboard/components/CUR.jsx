@@ -4,12 +4,14 @@ import ContentCopyTwoToneIcon from "@mui/icons-material/ContentCopyTwoTone";
 import img1 from "../../../../assets/cur1.png";
 import img2 from "../../../../assets/cur2.png";
 import img3 from "../../../../assets/cur3.png";
+import { toast } from "react-toastify";
 
 const resourceID = `ck-tuner-275595855473-hourly-cur`;
 const rolePath = `275595855473`;
 const CUR = () => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
   };
 
   return (

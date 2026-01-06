@@ -178,6 +178,7 @@
 
 import ContentCopyTwoToneIcon from "@mui/icons-material/ContentCopyTwoTone";
 import img from "../../../../assets/createiam.png";
+import { toast } from "react-toastify";
 
 const CreateIamRoleStep = ({
   roleArn,
@@ -212,13 +213,17 @@ const CreateIamRoleStep = ({
 }`,
   roleName = "CK-Tuner-Role-dev2",
 }) => {
-  const copyToClipboard = (text) => navigator.clipboard.writeText(text);
-  const isValidArn = roleArn.startsWith("arn:aws:iam::");
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Copied to clipboard");
+  };
 
   return (
     <div className="bg-white border rounded-lg p-6 space-y-6">
       <div className="flex gap-3 items-start">
-        <span className="step-badge">1</span>
+        <span className="step-badge w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          1
+        </span>
         <p>
           Log into AWS account &{" "}
           <a href="#" className="text-blue-600 font-medium hover:underline">
@@ -229,7 +234,9 @@ const CreateIamRoleStep = ({
       </div>
 
       <div className="flex gap-3 items-start">
-        <span className="step-badge">2</span>
+        <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          2
+        </span>
         <p>
           In the <i>Trusted entity type</i> section, select{" "}
           <b>Custom trust policy</b>. Replace the prefilled policy with the
@@ -251,7 +258,9 @@ const CreateIamRoleStep = ({
       </div>
 
       <div className="flex gap-3 items-start">
-        <span className="step-badge">3</span>
+        <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          3
+        </span>
         <p>
           Click on <b>Next</b> to go to the <i>Add permissions</i> page. We
           would not be adding any permissions for now. Click on <b>Next</b>.
@@ -259,7 +268,9 @@ const CreateIamRoleStep = ({
       </div>
 
       <div className="flex gap-3 items-start">
-        <span className="step-badge">4</span>
+        <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          4
+        </span>
         <p>
           In the <i>Role name</i> field, enter the below-mentioned role name and
           click on <b>Create Role</b> –
@@ -282,7 +293,9 @@ const CreateIamRoleStep = ({
       </div>
 
       <div className="flex gap-3 items-start">
-        <span className="step-badge">5</span>
+        <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          5
+        </span>
         <p>
           Go to the newly created IAM Role and copy the <b>Role ARN</b> –
         </p>
@@ -297,7 +310,9 @@ const CreateIamRoleStep = ({
       </div>
 
       <div className="flex gap-3 items-start">
-        <span className="step-badge">6</span>
+        <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold">
+          6
+        </span>
         <p>
           Paste the copied <b>Role ARN</b>, Account ID, and Account Name below –
         </p>
