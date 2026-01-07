@@ -7,7 +7,7 @@ export const fetchUsers = () => async (dispatch) => {
   try {
     const response = await getAllUsers();
 
-    const mappedUsers = response?.data.map((user, index) => ({
+    const mappedUsers = response?.data.map((user) => ({
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -19,22 +19,25 @@ export const fetchUsers = () => async (dispatch) => {
       type: SET_USERS,
       payload: mappedUsers,
     });
-  } catch {
+  } catch (err) {
     toast.error("Error fetching users");
+    throw err;
   }
 };
 
 export const addUser = (user) => async (dispatch) => {
   try {
     const response = await registerUser(user);
-    const newUser = response;
 
     dispatch({
       type: "addUser",
-      payload: newUser,
+      payload: response,
     });
-  } catch {
-    toast.error("Failed to add user");
+
+    toast.success("User created successfully");
+  } catch (err) {
+    toast.error(err.response?.data || "Failed to create user");
+    throw err;
   }
 };
 
@@ -46,8 +49,12 @@ export const updateUser = (userId, userData) => async (dispatch) => {
       type: "updateUser",
       payload: updatedUser,
     });
-  } catch {
-    toast.error("Failed to update user");
+
+    toast.success("User updated successfully");
+  } catch (err) {
+    console.error("UPDATE ERROR CAUGHT IN ACTION", err);
+    toast.error("Update failed");
+    throw err;
   }
 };
 
@@ -55,7 +62,7 @@ export const toggleModal = () => ({
   type: "toggleModal",
 });
 
-export const loginSuccess = (token, email, role) => ({
+export const loginSuccess = (payload) => ({
   type: "LOGIN_SUCCESS",
-  payload: { token, email, role },
+  payload,
 });

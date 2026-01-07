@@ -1,66 +1,6 @@
 import React from "react";
 import ReactFusioncharts from "./fusionSetup";
 
-// const dataSource = {
-//   chart: {
-//     caption: "Reach of Social Media Platforms among Adults",
-//     subcaption: "2018-2023",
-//     yaxisname: "% of Adults on this platform",
-//     numbersuffix: "%",
-//     plottooltext: "<b>$dataValue</b> of Adults were on $seriesName",
-//     drawcrossline: "1",
-//     theme: "gammel",
-//   },
-//   categories: [
-//     {
-//       category: [
-//         { label: "2018" },
-//         { label: "2019" },
-//         { label: "2021" },
-//         { label: "2023" },
-//       ],
-//     },
-//   ],
-//   dataset: [
-//     {
-//       seriesname: "Facebook",
-//       data: [
-//         { value: "68" },
-//         { value: "69" },
-//         { value: "69" },
-//         { value: "68" },
-//       ],
-//     },
-//     {
-//       seriesname: "Instagram",
-//       data: [
-//         { value: "35" },
-//         { value: "37" },
-//         { value: "40" },
-//         { value: "47" },
-//       ],
-//     },
-//     {
-//       seriesname: "LinkedIn",
-//       data: [
-//         { value: "25" },
-//         { value: "27" },
-//         { value: "28" },
-//         { value: "30" },
-//       ],
-//     },
-//     {
-//       seriesname: "Twitter",
-//       data: [
-//         { value: "24" },
-//         { value: "22" },
-//         { value: "23" },
-//         { value: "22" },
-//       ],
-//     },
-//   ],
-// };
-
 const dataSource = {
   chart: {
     caption: "AWS Services",

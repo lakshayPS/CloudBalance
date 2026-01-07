@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CloudKeeper from "../../assets/CloudKeeper.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -7,25 +7,20 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { persistor } from "../../store";
 
-const Header = ({ toggleSidebar, onLogout }) => {
+const Header = ({ toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState("Lens");
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const menu = ["Lens", "Tuner", "CK-All"];
   const open = Boolean(anchorEl);
 
-  const email = useSelector((state) => state.authReducer.email);
-  const users = useSelector((state) => state.modifyTable.users);
-
-  const firstName = users.find((u) => u.email === email)?.firstName || "";
-
-  useEffect(() => {
-    if (firstName) {
-      localStorage.setItem("username", firstName);
-    }
-  }, [firstName]);
+  const userName = useSelector((state) => state?.auth?.userName);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -40,34 +35,39 @@ const Header = ({ toggleSidebar, onLogout }) => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    onLogout();
-    navigate("/");
+  const handleLogout = async () => {
+    dispatch({ type: "LOGOUT" });
+    await persistor.purge();
+    navigate("/", { replace: true });
   };
 
   return (
     <header className="flex justify-between items-center w-screen shadow-xl z-10">
-      <div className="w-1/5 h-20 flex items-center justify-evenly ">
+      <div className="w-1/5 h-20 flex items-center justify-evenly">
         <div className="w-1/2">
-          <img src={CloudKeeper} alt="image error occured" />
+          <img src={CloudKeeper} alt="CloudKeeper logo" />
         </div>
+
         <div className="flex items-center justify-evenly w-1/3">
           <MenuIcon
             color="info"
             className="cursor-pointer"
             onClick={toggleSidebar}
           />
+
           <div className="flex items-center flex-col justify-center">
             <p className="font-bold">Module</p>
+
             <div className="flex items-center justify-center">
               <p>{selectedMenu}</p>
               <ArrowDropDownIcon
                 className="cursor-pointer"
                 onClick={handleOpen}
               />
+
               <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                 {menu.map((item, index) => (
-                  <MenuItem id={index} onClick={() => handleSelect(item)}>
+                  <MenuItem key={index} onClick={() => handleSelect(item)}>
                     {item}
                   </MenuItem>
                 ))}
@@ -76,6 +76,7 @@ const Header = ({ toggleSidebar, onLogout }) => {
           </div>
         </div>
       </div>
+
       <div className="w-1/4 flex items-center justify-around">
         <div className="flex items-center w-1/2 justify-between">
           <AccountCircleOutlinedIcon
@@ -83,21 +84,24 @@ const Header = ({ toggleSidebar, onLogout }) => {
             fontSize="large"
             className="cursor-pointer"
           />
+
           <div>
             <p>Welcome,</p>
-            <p className="text-blue-600 font-bold flex items-center">
-              <p className="">Lakshay Pratap Singh</p>
+            <p className="text-blue-600 font-bold flex items-center gap-1">
+              {userName || "User"}
               <InfoOutlinedIcon className="cursor-pointer" />
             </p>
           </div>
         </div>
+
         <p className="text-5xl text-gray-100 cursor-default">|</p>
+
         <div
           className="h-1/2 flex items-center justify-center w-1/4 border-2 rounded border-blue-500 py-2 cursor-pointer"
           onClick={handleLogout}
         >
-          <LogoutRoundedIcon color="info" />{" "}
-          <p className="text-blue-500 font-bold">Logout</p>
+          <LogoutRoundedIcon color="info" />
+          <p className="text-blue-500 font-bold ml-1">Logout</p>
         </div>
       </div>
     </header>

@@ -1,54 +1,29 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Header from "./components/layout/Header";
-import MainContent from "./components/layout/MainContent";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
-import { useState } from "react";
 import ProtectedRoute from "./routes/ProtectedRoute";
-import AWSServices from "./components/dashboards/AWSServicesDashboard/AWSServices";
+import MainContent from "./components/layout/MainContent";
+import Dashboard from "./components/dashboards/Dashboard";
 import Onboarding from "./components/dashboards/OnboardingDashboard/Onboarding";
 import CostExplorer from "./components/dashboards/CostExplorerDashboard/CostExplorer";
+import AWSServices from "./components/dashboards/AWSServicesDashboard/AWSServices";
 import ServicesProvider from "./components/dashboards/AWSServicesDashboard/context/ServicesProvider";
-import SideBar from "./components/layout/SideBar";
-import Dashboard from "./components/dashboards/Dashboard";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem("isAuthenticated") == "true";
-  });
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem("isAuthenticated", "true");
-    toast.success("Login success!");
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.clear();
-    toast.success("Logged out successfully!");
-  };
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Login onLogin={handleLogin} isAuthenticated={isAuthenticated} />
-            }
-          />
+          <Route path="/" element={<Login />} />
 
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <MainContent onLogout={handleLogout} />
+              <ProtectedRoute>
+                <MainContent />
               </ProtectedRoute>
             }
           >
-            {/* <Header />
-            <SideBar /> */}
             <Route path="user-management" element={<Dashboard />} />
             <Route path="onboarding" element={<Onboarding />} />
             <Route path="cost-explorer" element={<CostExplorer />} />
@@ -61,11 +36,9 @@ function App() {
               }
             />
           </Route>
-
-          {/* </Route> */}
-          {/* <Layout /> */}
         </Routes>
       </BrowserRouter>
+
       <ToastContainer />
     </>
   );

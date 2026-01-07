@@ -1,10 +1,8 @@
-// Stepper.jsx
 const Stepper = ({ steps, activeStep }) => {
   return (
     <div className="flex items-center w-full justify-between">
       {steps.map((label, index) => (
         <div key={index} className="flex items-center w-full">
-          {/* Circle */}
           <div
             className={`
               flex items-center justify-center
@@ -21,10 +19,8 @@ const Stepper = ({ steps, activeStep }) => {
             {index < activeStep ? "✓" : index + 1}
           </div>
 
-          {/* Label */}
           <span className="ml-2 text-sm whitespace-nowrap">{label}</span>
 
-          {/* Line */}
           {index !== steps.length - 1 && (
             <div
               className={`flex-1 h-0.5 mx-4 ${

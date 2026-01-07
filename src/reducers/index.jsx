@@ -6,7 +6,7 @@ import { authReducer } from "./authReducer";
 const RootReducer = combineReducers({
   modifyTable,
   toggleModal,
-  authReducer,
+  auth: authReducer,
 });
 
 export default RootReducer;

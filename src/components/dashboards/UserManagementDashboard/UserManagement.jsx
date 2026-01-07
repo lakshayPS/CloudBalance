@@ -28,14 +28,6 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
         : [];
 
       setAccounts(data);
-
-      if (mode === "edit" && selectedRow?.email) {
-        const preselected = data
-          .filter((acc) => acc.userEmails?.includes(selectedRow?.email))
-          .map((acc) => acc.accId);
-
-        setSelectedAccounts(preselected);
-      }
     } catch (error) {
       console.error("Error fetching accounts", error);
       toast.error("Error fetching accounts");
@@ -53,6 +45,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
       setSelectedAccounts(data.map((acc) => acc.accId));
     } catch (err) {
       console.error("Error while fetching accounts: ", err);
+      toast.error("Error fetching account");
     }
   };
 
@@ -89,8 +82,10 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   }, [role]);
 
   useEffect(() => {
-    fetchAssignedAccounts(selectedRow?.id);
-  }, [selectedRow]);
+    if (mode === "edit" && selectedRow?.id) {
+      fetchAssignedAccounts(selectedRow.id);
+    }
+  }, [mode, selectedRow]);
 
   const users = useSelector((state) => state.modifyTable.users);
 
@@ -110,6 +105,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
           accountIds: role === "ROLE_CUSTOMER" ? selectedAccounts : [],
         })
       );
+
       handleClose();
     } catch (err) {
       console.error("Add user failed", err);
@@ -129,6 +125,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
           accountIds: role === "ROLE_CUSTOMER" ? selectedAccounts : [],
         })
       );
+
       handleClose();
     } catch (err) {
       console.error("Update failed", err);
@@ -265,7 +262,6 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
         className={`bg-blue-600 text-white py-2 mb-4 rounded-md font-semibold hover:bg-blue-700 flex ${
           mode === "edit" ? "w-1/7" : "w-1/6"
         } justify-center cursor-pointer relative left-4 bottom-4`}
-        // onClick={addRow}
         onClick={mode === "edit" ? handleUpdate : handleAdd}
       >
         {mode === "edit" ? "Update" : "Add"}

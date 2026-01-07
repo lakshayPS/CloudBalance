@@ -1,23 +1,15 @@
 import axios from "axios";
+import store from "../store";
 
-const PUBLIC_URL = "http://localhost:8080/auth"; // Replace with your backend URL
+const PUBLIC_URL = "http://localhost:8080/auth";
 const PROTECTED_URL = "http://localhost:8080/users";
 const PROTECTED_URL2 = "http://localhost:8080/auth";
 const ONBOARDING_URL = "http://localhost:8080/api/accounts";
 
 const getAuthHeader = () => {
-  const token = localStorage.getItem("token");
-  // console.log("tokennn: ", token);
-  return { Authorization: `Bearer ${token}` };
+  const token = store.getState().auth.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
 };
-
-// export const registerUser = async (user) => {
-//   const response = await axios.post(`${PROTECTED_URL2}/register`, user, {
-//     headers: getAuthHeader(),
-//   });
-
-//   return response.data;
-// };
 
 export const registerUser = async (user) => {
   const response = await axios.post(`${PROTECTED_URL}/addUser`, user, {
@@ -26,14 +18,6 @@ export const registerUser = async (user) => {
 
   return response.data;
 };
-
-// export const update = async (user) => {
-//   const response = await axios.put(`${PROTECTED_URL}/updateUser`, user, {
-//     headers: getAuthHeader(),
-//   });
-
-//   return response.data;
-// };
 
 export const update = async (userId, payload) => {
   const response = await axios.post(
@@ -53,7 +37,6 @@ export const getAllUsers = () => {
   return axios.get(`${PROTECTED_URL}/getAllUsers`, {
     headers: getAuthHeader(),
   });
-  // return axios.get(`${PROTECTED_URL}/getAllUsers`);
 };
 
 export const getAllAccounts = () => {
@@ -63,9 +46,8 @@ export const getAllAccounts = () => {
 };
 
 export const assignAccountsToUser = (userId, accIds) => {
-  console.log("userId: ", userId, " and accIds: ", accIds);
   return axios.post(
-    `http://localhost:8080/api/accounts/users/${userId}/assign-accounts`,
+    `${ONBOARDING_URL}/users/${userId}/assign-accounts`,
     {
       accIds: accIds,
     },
@@ -86,7 +68,7 @@ export const createAccount = (accountId, accountName, roleArn) => {
     iamARN: roleArn,
   };
 
-  return axios.post(`http://localhost:8080/api/accounts/create`, payload, {
+  return axios.post(`${ONBOARDING_URL}/create`, payload, {
     headers: getAuthHeader(),
   });
 };

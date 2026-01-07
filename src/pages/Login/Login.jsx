@@ -1,23 +1,24 @@
-import { useNavigate } from "react-router";
 import CloudKeeper from "../../assets/CloudKeeper.png";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../services/authServices";
 import { loginSuccess } from "../../actions";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
-const Login = ({ onLogin, isAuthenticated }) => {
+const Login = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  // const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const token = useSelector((state) => state?.auth?.token);
+
   useEffect(() => {
-    if (isAuthenticated) {
+    if (token) {
       navigate("/dashboard/user-management");
     }
-  }, [isAuthenticated, navigate]);
+  }, [token, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,19 +28,24 @@ const Login = ({ onLogin, isAuthenticated }) => {
         password: userPassword,
       });
 
-      const { token, userName, role } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify({ userName, role }));
+      const { token, tokenType, email, role, userName } = response.data;
 
-      dispatch(loginSuccess(token, userName, role));
+      dispatch(
+        loginSuccess({
+          token,
+          tokenType,
+          email,
+          role,
+          userName,
+        })
+      );
 
-      onLogin();
+      toast.success("Login successful");
       navigate("/dashboard/user-management");
     } catch {
       toast.error("Invalid Credentials");
     }
   };
-
   return (
     <div className="flex items-center justify-center h-screen w-screen ">
       <div className="w-1/3 p-8 bg-white rounded-xl shadow-xl">
@@ -78,8 +84,6 @@ const Login = ({ onLogin, isAuthenticated }) => {
               onChange={(e) => setUserPassword(e.target.value)}
             />
           </div>
-
-          {/* {errorMessage && <p className="text-red-500">{errorMessage}</p>} */}
 
           <button
             type="submit"

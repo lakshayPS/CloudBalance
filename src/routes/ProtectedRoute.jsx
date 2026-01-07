@@ -1,9 +1,20 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
-import MainContent from "../components/layout/MainContent";
-const ProtectedRoute = ({ isAuthenticated, children }) => {
-  if (!isAuthenticated) {
-    return <Navigate to="/" />;
+import { useSelector } from "react-redux";
+
+const ProtectedRoute = ({ children }) => {
+  const { token } = useSelector((state) => state?.auth || {});
+  const rehydrated = useSelector((state) => state?._persist?.rehydrated);
+
+  if (!rehydrated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!token) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

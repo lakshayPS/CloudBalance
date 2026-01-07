@@ -2,17 +2,22 @@ const initialState = {
   token: null,
   email: null,
   role: null,
+  username: null,
 };
 
 export const authReducer = (state = initialState, action) => {
-  // console.log("action: ", action);
   switch (action.type) {
     case "LOGIN_SUCCESS":
       return {
-        token: action.payload.token,
-        email: action.payload.email,
-        role: action.payload.role,
+        ...state,
+        token: action?.payload?.token,
+        email: action?.payload?.email,
+        role: action?.payload?.role,
+        userName: action?.payload?.userName,
       };
+
+    case "LOGOUT":
+      return initialState;
 
     default:
       return state;
