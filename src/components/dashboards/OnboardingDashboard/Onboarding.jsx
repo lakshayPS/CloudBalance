@@ -54,8 +54,10 @@ const Onboarding = () => {
         await createAccount(accountId, accountName, roleArn);
         toast.success("Account onboarded succesfully");
       } catch (err) {
-        console.error(err);
-        toast.error("Failed to onboard");
+        console.error(err?.status);
+        toast.error(
+          err?.status == 409 ? "Account already onboarded" : "Failed to onboard"
+        );
       }
     } else {
       setActiveStep((prev) => prev + 1);
