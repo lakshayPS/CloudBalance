@@ -1,5 +1,10 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { toast } from "react-toastify";
 
+const copyToClipboard = (text) => {
+  navigator.clipboard.writeText(text);
+  toast.success("Copied to clipboard");
+};
 export const ec2Columns = [
   {
     field: "resourceId",
@@ -21,7 +26,7 @@ export const ec2Columns = [
         <ContentCopyIcon
           fontSize="small"
           style={{ cursor: "pointer" }}
-          onClick={() => navigator.clipboard.writeText(params.value)}
+          onClick={() => copyToClipboard(params.value)}
         />
       </div>
     ),
@@ -183,7 +188,7 @@ export const rdsColumns = [
         <ContentCopyIcon
           fontSize="small"
           style={{ cursor: "pointer" }}
-          onClick={() => navigator.clipboard.writeText(params.value)}
+          onClick={() => copyToClipboard(params.value)}
         />
       </div>
     ),
@@ -370,7 +375,7 @@ export const asgColumns = [
         <ContentCopyIcon
           fontSize="small"
           style={{ cursor: "pointer" }}
-          onClick={() => navigator.clipboard.writeText(params.value)}
+          onClick={() => copyToClipboard(params.value)}
         />
       </div>
     ),

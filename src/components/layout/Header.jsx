@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CloudKeeper from "../../assets/CloudKeeper.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -9,10 +9,13 @@ import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../../store";
+import { getAssignedAccountsByUserEmail } from "../../services/authServices";
+import { toast } from "react-toastify";
 
 const Header = ({ toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedMenu, setSelectedMenu] = useState("Lens");
+  const [selectedMenu, setSelectedMenu] = useState("");
+  const [accounts, setAccounts] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,6 +24,30 @@ const Header = ({ toggleSidebar }) => {
   const open = Boolean(anchorEl);
 
   const userName = useSelector((state) => state?.auth?.userName);
+  const userEmail = useSelector((state) => state?.auth?.email);
+  const role = useSelector((state) => state?.auth?.role);
+
+  const fetchAccounts = async () => {
+    try {
+      if (!userEmail) return;
+
+      const response = await getAssignedAccountsByUserEmail(userEmail);
+      const accNames = response.data.map((account) => account.accName);
+      setAccounts(accNames);
+    } catch (err) {
+      toast.error("Failed to fetch accounts");
+    }
+  };
+
+  useEffect(() => {
+    if (role == "ROLE_CUSTOMER") fetchAccounts();
+  }, [userEmail]);
+
+  useEffect(() => {
+    if (accounts?.length > 0 && !selectedMenu) {
+      setSelectedMenu(accounts[0]);
+    }
+  }, [accounts]);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -43,32 +70,54 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <header className="flex justify-between items-center w-screen shadow-xl z-10">
-      <div className="w-1/5 h-20 flex items-center justify-evenly">
-        <div className="w-1/2">
+      <div className="w-1/5 h-20 flex items-center justify-around">
+        <div className="w-1/3">
           <img src={CloudKeeper} alt="CloudKeeper logo" />
         </div>
 
-        <div className="flex items-center justify-evenly w-1/3">
+        <div className="flex items-center gap-4 w-1/2">
           <MenuIcon
             color="info"
-            className="cursor-pointer"
+            className="cursor-pointer flex-shrink-0"
             onClick={toggleSidebar}
           />
 
-          <div className="flex items-center flex-col justify-center">
-            <p className="font-bold">Module</p>
+          <div className="flex items-center gap-2 max-w-[220px]">
+            <p className="font-bold flex-shrink-0">Module</p>
 
-            <div className="flex items-center justify-center">
-              <p>{selectedMenu}</p>
+            <div className="flex items-center gap-1 min-w-0">
+              <p
+                className="max-w-[160px] truncate whitespace-nowrap overflow-hidden"
+                title={selectedMenu}
+              >
+                {selectedMenu || "Loading..."}
+              </p>
+
               <ArrowDropDownIcon
-                className="cursor-pointer"
+                className="cursor-pointer flex-shrink-0"
                 onClick={handleOpen}
               />
 
-              <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                {menu.map((item, index) => (
-                  <MenuItem key={index} onClick={() => handleSelect(item)}>
-                    {item}
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                  style: {
+                    maxWidth: 260,
+                    maxHeight: 300,
+                  },
+                }}
+              >
+                {accounts.map((name, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => handleSelect(name)}
+                    title={name}
+                  >
+                    <span className="block max-w-[230px] truncate whitespace-nowrap">
+                      {name}
+                    </span>
                   </MenuItem>
                 ))}
               </Menu>
@@ -78,11 +127,11 @@ const Header = ({ toggleSidebar }) => {
       </div>
 
       <div className="w-1/4 flex items-center justify-around">
-        <div className="flex items-center w-1/2 justify-between">
+        <div className="flex items-center w-auto justify-between">
           <AccountCircleOutlinedIcon
             color="info"
             fontSize="large"
-            className="cursor-pointer"
+            className="cursor-pointer mx-3"
           />
 
           <div>

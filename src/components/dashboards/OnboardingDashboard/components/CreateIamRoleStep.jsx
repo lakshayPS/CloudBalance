@@ -69,7 +69,7 @@ const CreateIamRoleStep = ({
       <div className="relative bg-gray-50 border rounded-md p-2 text-sm font-mono">
         <button
           onClick={() => copyToClipboard(policy)}
-          className="absolute top-2 right-2 p-1 rounded text-blue-400 hover:text-blue-800"
+          className="absolute top-2 right-2 p-1 rounded text-blue-400 hover:text-blue-800 cursor-pointer"
           title="Copy Policy"
         >
           <ContentCopyTwoToneIcon className="w-5 h-5" />
@@ -107,7 +107,7 @@ const CreateIamRoleStep = ({
         />
         <button
           onClick={() => copyToClipboard(roleName)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-blue-400 hover:text-blue-800"
+          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded text-blue-400 hover:text-blue-800 cursor-pointer"
           title="Copy Role Name"
         >
           <ContentCopyTwoToneIcon className="w-5 h-5" />

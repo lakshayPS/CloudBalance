@@ -8,6 +8,7 @@ import CostExplorer from "./components/dashboards/CostExplorerDashboard/CostExpl
 import AWSServices from "./components/dashboards/AWSServicesDashboard/AWSServices";
 import ServicesProvider from "./components/dashboards/AWSServicesDashboard/context/ServicesProvider";
 import { ToastContainer } from "react-toastify";
+import Unauthorized from "./pages/UnauthorizedPage/Unauthorized";
 
 function App() {
   return (
@@ -19,23 +20,65 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute
+                allowedRoles={["ROLE_ADMIN", "ROLE_READONLY", "ROLE_CUSTOMER"]}
+              >
                 <MainContent />
               </ProtectedRoute>
             }
           >
-            <Route path="user-management" element={<Dashboard />} />
-            <Route path="onboarding" element={<Onboarding />} />
-            <Route path="cost-explorer" element={<CostExplorer />} />
+            <Route
+              path="user-management"
+              element={
+                <ProtectedRoute allowedRoles={["ROLE_ADMIN", "ROLE_READONLY"]}>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="onboarding"
+              element={
+                <ProtectedRoute allowedRoles={["ROLE_ADMIN", "ROLE_READONLY"]}>
+                  <Onboarding />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="cost-explorer"
+              element={
+                <ProtectedRoute
+                  allowedRoles={[
+                    "ROLE_ADMIN",
+                    "ROLE_CUSTOMER",
+                    "ROLE_READONLY",
+                  ]}
+                >
+                  <CostExplorer />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="aws-services"
               element={
-                <ServicesProvider>
-                  <AWSServices />
-                </ServicesProvider>
+                <ProtectedRoute
+                  allowedRoles={[
+                    "ROLE_ADMIN",
+                    "ROLE_CUSTOMER",
+                    "ROLE_READONLY",
+                  ]}
+                >
+                  <ServicesProvider>
+                    <AWSServices />
+                  </ServicesProvider>
+                </ProtectedRoute>
               }
             />
           </Route>
+
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
       </BrowserRouter>
 

@@ -2,7 +2,7 @@ const initialState = {
   token: null,
   email: null,
   role: null,
-  username: null,
+  userName: null,
 };
 
 export const authReducer = (state = initialState, action) => {

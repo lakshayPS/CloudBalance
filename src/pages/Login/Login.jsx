@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../services/authServices";
 import { loginSuccess } from "../../actions";
 import { toast } from "react-toastify";
+import { ROLE_ROUTES } from "../../constants/roleRoutes";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -12,13 +13,49 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const token = useSelector((state) => state?.auth?.token);
+
+  // useEffect(() => {
+  //   if (token) {
+  //     navigate("/dashboard/user-management");
+  //   }
+  // }, [token, navigate]);
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await loginUser({
+  //       email: userEmail,
+  //       password: userPassword,
+  //     });
+
+  //     const { token, tokenType, email, role, userName } = response.data;
+
+  //     dispatch(
+  //       loginSuccess({
+  //         token,
+  //         tokenType,
+  //         email,
+  //         role,
+  //         userName,
+  //       })
+  //     );
+
+  //     toast.success("Login successful");
+  //     navigate("/dashboard/user-management");
+  //   } catch {
+  //     toast.error("Invalid Credentials");
+  //   }
+  // };
+
   const token = useSelector((state) => state?.auth?.token);
+  const role = useSelector((state) => state?.auth?.role);
 
   useEffect(() => {
-    if (token) {
-      navigate("/dashboard/user-management");
+    if (token && role) {
+      navigate(ROLE_ROUTES[role] || "/dashboard", { replace: true });
     }
-  }, [token, navigate]);
+  }, [token, role, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -41,11 +78,13 @@ const Login = () => {
       );
 
       toast.success("Login successful");
-      navigate("/dashboard/user-management");
+
+      navigate(ROLE_ROUTES[role] || "/dashboard", { replace: true });
     } catch {
       toast.error("Invalid Credentials");
     }
   };
+
   return (
     <div className="flex items-center justify-center h-screen w-screen ">
       <div className="w-1/3 p-8 bg-white rounded-xl shadow-xl">

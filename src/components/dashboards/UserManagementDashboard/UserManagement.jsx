@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addUser, updateUser } from "../../../actions";
 import {
   getAllAccounts,
@@ -86,8 +86,6 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
       fetchAssignedAccounts(selectedRow.id);
     }
   }, [mode, selectedRow]);
-
-  const users = useSelector((state) => state.modifyTable.users);
 
   const dispatch = useDispatch();
 

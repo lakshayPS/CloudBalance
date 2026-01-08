@@ -61,6 +61,12 @@ export const getAssignedAccountsByUserId = (userId) => {
   });
 };
 
+export const getAssignedAccountsByUserEmail = (userEmail) => {
+  return axios.get(`${ONBOARDING_URL}/getByEmail?email=${userEmail}`, {
+    headers: getAuthHeader(),
+  });
+};
+
 export const createAccount = (accountId, accountName, roleArn) => {
   const payload = {
     accId: Number(accountId),
