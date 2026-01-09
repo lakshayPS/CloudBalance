@@ -148,7 +148,6 @@ export default function UserTable() {
     setOpen(true);
   };
 
-  // ✅ Hide action column completely for non-admins
   const columns = isAdmin
     ? allColumns
     : allColumns.filter((col) => col.id !== "action");
@@ -218,7 +217,6 @@ export default function UserTable() {
         }}
       />
 
-      {/* ✅ Modal (admin only can open) */}
       <UserModal
         open={open}
         handleClose={() => setOpen(false)}

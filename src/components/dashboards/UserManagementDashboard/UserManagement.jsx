@@ -1,10 +1,7 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser, updateUser } from "../../../actions";
-import {
-  getAllAccounts,
-  getAssignedAccountsByUserId,
-} from "../../../services/authServices";
+import { getAssignedAccountsByUserId } from "../../../services/authServices";
 import { toast } from "react-toastify";
 
 const UserManagement = ({ mode, selectedRow, handleClose }) => {
@@ -14,26 +11,9 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
 
-  const [accounts, setAccounts] = useState([]);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
 
-  const fetchAccounts = async () => {
-    try {
-      const response = await getAllAccounts();
-
-      const data = Array.isArray(response)
-        ? response
-        : Array.isArray(response?.data)
-        ? response?.data
-        : [];
-
-      setAccounts(data);
-    } catch (error) {
-      console.error("Error fetching accounts", error);
-      toast.error("Error fetching accounts");
-      setAccounts([]);
-    }
-  };
+  const accounts = useSelector((state) => state?.accounts?.list ?? []);
 
   const fetchAssignedAccounts = async (id) => {
     try {
@@ -73,10 +53,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
   }, [mode, selectedRow]);
 
   useEffect(() => {
-    if (role === "ROLE_CUSTOMER") {
-      fetchAccounts();
-    } else {
-      setAccounts([]);
+    if (role !== "ROLE_CUSTOMER") {
       setSelectedAccounts([]);
     }
   }, [role]);
@@ -104,9 +81,15 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
         })
       );
 
+      toast.success("User added successfully");
+
       handleClose();
     } catch (err) {
-      console.error("Add user failed", err);
+      if (err.response?.status === 403) {
+        toast.error("You are not authorized to perform this action");
+      } else {
+        toast.error(err.response?.data || "Failed to create user");
+      }
     }
   };
 

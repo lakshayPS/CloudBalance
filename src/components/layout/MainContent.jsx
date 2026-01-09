@@ -1,10 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAccountsByEmail, fetchAllAccounts } from "../../actions";
 
 const MainContent = ({ onLogout }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const dispatch = useDispatch();
+  const role = useSelector((state) => state.auth.role);
+  const email = useSelector((state) => state.auth.email);
+
+  useEffect(() => {
+    if (!role) return;
+
+    if (role === "ROLE_CUSTOMER") {
+      dispatch(fetchAccountsByEmail(email));
+    } else {
+      dispatch(fetchAllAccounts());
+    }
+  }, [role, email, dispatch]);
 
   return (
     <div className="flex flex-col h-screen">

@@ -9,45 +9,26 @@ import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { persistor } from "../../store";
-import { getAssignedAccountsByUserEmail } from "../../services/authServices";
-import { toast } from "react-toastify";
 
 const Header = ({ toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedMenu, setSelectedMenu] = useState("");
-  const [accounts, setAccounts] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const menu = ["Lens", "Tuner", "CK-All"];
   const open = Boolean(anchorEl);
 
   const userName = useSelector((state) => state?.auth?.userName);
-  const userEmail = useSelector((state) => state?.auth?.email);
-  const role = useSelector((state) => state?.auth?.role);
+  const accountsFromStore = useSelector((state) => state?.accounts?.list ?? []);
 
-  const fetchAccounts = async () => {
-    try {
-      if (!userEmail) return;
-
-      const response = await getAssignedAccountsByUserEmail(userEmail);
-      const accNames = response.data.map((account) => account.accName);
-      setAccounts(accNames);
-    } catch (err) {
-      toast.error("Failed to fetch accounts");
-    }
-  };
+  const accountNames = accountsFromStore.map((acc) => acc.accName);
 
   useEffect(() => {
-    if (role == "ROLE_CUSTOMER") fetchAccounts();
-  }, [userEmail]);
-
-  useEffect(() => {
-    if (accounts?.length > 0 && !selectedMenu) {
-      setSelectedMenu(accounts[0]);
+    if (accountNames.length > 0 && !selectedMenu) {
+      setSelectedMenu(accountNames[0]);
     }
-  }, [accounts]);
+  }, [accountNames, selectedMenu]);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -109,7 +90,7 @@ const Header = ({ toggleSidebar }) => {
                   },
                 }}
               >
-                {accounts.map((name, index) => (
+                {accountNames.map((name, index) => (
                   <MenuItem
                     key={index}
                     onClick={() => handleSelect(name)}

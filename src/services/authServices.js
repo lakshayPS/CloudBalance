@@ -39,7 +39,7 @@ export const getAllUsers = () => {
   });
 };
 
-export const getAllAccounts = () => {
+export const getAllOnboardedAccounts = () => {
   return axios.get(`${ONBOARDING_URL}/getAllAccounts`, {
     headers: getAuthHeader(),
   });

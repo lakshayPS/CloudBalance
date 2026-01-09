@@ -1,9 +1,18 @@
 import { toast } from "react-toastify";
-import { getAllUsers, registerUser, update } from "../services/authServices";
+import {
+  getAllOnboardedAccounts,
+  getAllUsers,
+  getAssignedAccountsByUserEmail,
+  registerUser,
+  update,
+} from "../services/authServices";
+// import { useSelector } from "react-redux";
 
 export const SET_USERS = "setUsers";
 
-export const fetchUsers = () => async (dispatch) => {
+export const fetchUsers = () => async (dispatch, getState) => {
+  const role = getState()?.accounts?.role;
+
   try {
     const response = await getAllUsers();
 
@@ -20,25 +29,38 @@ export const fetchUsers = () => async (dispatch) => {
       payload: mappedUsers,
     });
   } catch (err) {
-    toast.error("Error fetching users");
+    if (role === "ADMIN" || role === "READONLY") {
+      toast.error("Error fetching users");
+    }
     throw err;
   }
 };
 
+// export const addUser = (user) => async (dispatch) => {
+//   try {
+//     const response = await registerUser(user);
+
+//     dispatch({
+//       type: "addUser",
+//       payload: response,
+//     });
+
+//     toast.success("User created successfully");
+//   } catch (err) {
+//     toast.error(err.response?.data || "Failed to create user");
+//     throw err;
+//   }
+// };
+
 export const addUser = (user) => async (dispatch) => {
-  try {
-    const response = await registerUser(user);
+  const response = await registerUser(user);
 
-    dispatch({
-      type: "addUser",
-      payload: response,
-    });
+  dispatch({
+    type: "addUser",
+    payload: response?.data,
+  });
 
-    toast.success("User created successfully");
-  } catch (err) {
-    toast.error(err.response?.data || "Failed to create user");
-    throw err;
-  }
+  return response?.data; // important
 };
 
 export const updateUser = (userId, userData) => async (dispatch) => {
@@ -52,9 +74,52 @@ export const updateUser = (userId, userData) => async (dispatch) => {
 
     toast.success("User updated successfully");
   } catch (err) {
-    console.error("UPDATE ERROR CAUGHT IN ACTION", err);
-    toast.error("Update failed");
+    toast.error(err.response?.data);
     throw err;
+  }
+};
+
+export const fetchAccounts = () => async (dispatch) => {
+  try {
+    const response = await getAllOnboardedAccounts();
+
+    const data = Array.isArray(response?.data) ? response.data : [];
+
+    dispatch({
+      type: "SET_ACCOUNTS",
+      payload: data,
+    });
+  } catch (err) {
+    toast.error("Failed to fetch accounts");
+  }
+};
+
+export const fetchAllAccounts = () => async (dispatch, getState) => {
+  const role = getState()?.accounts?.role;
+  try {
+    const response = await getAllOnboardedAccounts();
+
+    dispatch({
+      type: "SET_ACCOUNTS",
+      payload: response?.data ?? [],
+    });
+  } catch (err) {
+    if (role === "ADMIN" || role === "READONLY") {
+      toast.error("Failed to fetch all accounts");
+    }
+  }
+};
+
+export const fetchAccountsByEmail = (email) => async (dispatch) => {
+  try {
+    const response = await getAssignedAccountsByUserEmail(email);
+
+    dispatch({
+      type: "SET_ACCOUNTS",
+      payload: response?.data ?? [],
+    });
+  } catch (err) {
+    toast.error("Failed to fetch user accounts");
   }
 };
 

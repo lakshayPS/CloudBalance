@@ -9,8 +9,44 @@ import AWSServices from "./components/dashboards/AWSServicesDashboard/AWSService
 import ServicesProvider from "./components/dashboards/AWSServicesDashboard/context/ServicesProvider";
 import { ToastContainer } from "react-toastify";
 import Unauthorized from "./pages/UnauthorizedPage/Unauthorized";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const handleRehydrate = () => {
+      try {
+        const state = JSON.parse(localStorage.getItem("persist:root"));
+        if (!state) return;
+
+        const auth = JSON.parse(state.auth);
+        const token = auth.token;
+        const allowedRoles = ["ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_READONLY"];
+
+        if (
+          !token ||
+          !allowedRoles.includes(auth.role) ||
+          token === "invalid"
+        ) {
+          dispatch({ type: "LOGOUT" });
+        }
+      } catch (err) {
+        dispatch({ type: "LOGOUT" });
+      }
+    };
+
+    // wait for store to be fully rehydrated
+    window.addEventListener("persist/REHYDRATE", handleRehydrate);
+
+    // fallback: also run once in case rehydrate already happened
+    handleRehydrate();
+
+    return () =>
+      window.removeEventListener("persist/REHYDRATE", handleRehydrate);
+  }, [dispatch]);
+
   return (
     <>
       <BrowserRouter>
