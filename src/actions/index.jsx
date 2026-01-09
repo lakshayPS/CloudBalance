@@ -6,13 +6,13 @@ import {
   registerUser,
   update,
 } from "../services/authServices";
-// import { useSelector } from "react-redux";
+
+const isAuthError = (err) =>
+  err.response?.status === 401 || err.response?.status === 403;
 
 export const SET_USERS = "setUsers";
 
-export const fetchUsers = () => async (dispatch, getState) => {
-  const role = getState()?.accounts?.role;
-
+export const fetchUsers = () => async (dispatch) => {
   try {
     const response = await getAllUsers();
 
@@ -29,28 +29,12 @@ export const fetchUsers = () => async (dispatch, getState) => {
       payload: mappedUsers,
     });
   } catch (err) {
-    if (role === "ADMIN" || role === "READONLY") {
-      toast.error("Error fetching users");
+    if (!isAuthError(err)) {
+      toast.error(err.response?.data || "Update failed");
     }
     throw err;
   }
 };
-
-// export const addUser = (user) => async (dispatch) => {
-//   try {
-//     const response = await registerUser(user);
-
-//     dispatch({
-//       type: "addUser",
-//       payload: response,
-//     });
-
-//     toast.success("User created successfully");
-//   } catch (err) {
-//     toast.error(err.response?.data || "Failed to create user");
-//     throw err;
-//   }
-// };
 
 export const addUser = (user) => async (dispatch) => {
   const response = await registerUser(user);
@@ -90,12 +74,13 @@ export const fetchAccounts = () => async (dispatch) => {
       payload: data,
     });
   } catch (err) {
-    toast.error("Failed to fetch accounts");
+    if (!isAuthError(err)) {
+      toast.error("Failed to fetch accounts");
+    }
   }
 };
 
-export const fetchAllAccounts = () => async (dispatch, getState) => {
-  const role = getState()?.accounts?.role;
+export const fetchAllAccounts = () => async (dispatch) => {
   try {
     const response = await getAllOnboardedAccounts();
 
@@ -104,8 +89,8 @@ export const fetchAllAccounts = () => async (dispatch, getState) => {
       payload: response?.data ?? [],
     });
   } catch (err) {
-    if (role === "ADMIN" || role === "READONLY") {
-      toast.error("Failed to fetch all accounts");
+    if (!isAuthError(err)) {
+      toast.error("Failed to fetch accounts");
     }
   }
 };
@@ -119,7 +104,10 @@ export const fetchAccountsByEmail = (email) => async (dispatch) => {
       payload: response?.data ?? [],
     });
   } catch (err) {
-    toast.error("Failed to fetch user accounts");
+    if (!isAuthError(err)) {
+      toast.error("Failed to fetch user accounts");
+    }
+    throw err;
   }
 };
 
