@@ -1,5 +1,3 @@
-import { toast } from "react-toastify";
-
 const initialState = {
   token: null,
   email: null,
@@ -19,7 +17,6 @@ export const authReducer = (state = initialState, action) => {
       };
 
     case "LOGOUT":
-      toast.info("Session expired. Please log in again.");
       return initialState;
 
     default:

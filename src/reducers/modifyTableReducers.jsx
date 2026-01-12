@@ -32,7 +32,6 @@ export const modifyTable = (state = initialState, action) => {
       };
     }
     case "LOGOUT":
-      toast.info("Session expired. Please log in again.");
       return initialState;
 
     default:

@@ -25,9 +25,8 @@ api.interceptors.response.use(
     const status = error.response?.status;
 
     if ((status === 401 || status === 403) && !isLoggingOut) {
-      isLoggingOut = true;
-
       toast.info("Session expired. Please log in again.");
+      isLoggingOut = true;
 
       store.dispatch({ type: "LOGOUT" });
       await persistor.purge();
