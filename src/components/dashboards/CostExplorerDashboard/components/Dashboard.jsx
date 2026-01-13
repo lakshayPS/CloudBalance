@@ -64,7 +64,7 @@ const Dashboard = () => {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      <div className="px-6 py-4 flex flex-col flex-1 overflow-hidden">
+      <div className="px-6 py-4 flex flex-col flex-1 min-h-0 overflow-hidden">
         <p className="text-lg font-semibold mb-3">Costs ($)</p>
 
         <div className="flex justify-between items-center mb-4">
@@ -89,25 +89,27 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        <div className="flex flex-1 min-w-0 gap-0">
-          <div className="flex-1 min-w-0 transition-all duration-300">
-            <div className="border rounded-lg shadow-sm mb-4 overflow-hidden">
-              <div className="h-[520px]">
-                <div className="p-4 h-full">
-                  <DynamicChart type={getChartType()} data={chartData} />
-                </div>
+        <div className="flex flex-1 min-w-0 min-h-0 gap-0">
+          <div className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden transition-all duration-300">
+            <div className="border rounded-lg shadow-sm mb-4">
+              <div className="h-[420px] p-4">
+                <DynamicChart type={getChartType()} data={chartData} />
               </div>
             </div>
 
-            {tableData && <CostTable data={tableData} groupBy={groupBy} />}
+            {tableData && (
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <CostTable data={tableData} groupBy={groupBy} />
+              </div>
+            )}
           </div>
 
           <div
             className={`
               transition-all duration-300 ease-in-out
               ${isFilterOpen ? "w-[360px]" : "w-0"}
-              overflow-hidden shrink-0 border-l bg-white
+              overflow-y-auto overflow-x-visible
+              shrink-0 border-l bg-white
           `}
           >
             <ChartFilterPanel onReset={() => console.log("reset filters")} />

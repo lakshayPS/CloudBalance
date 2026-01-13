@@ -45,24 +45,21 @@ const CostTable = ({ data, groupBy }) => {
   } = data || {};
 
   return (
-    <div className="border rounded-lg max-h-full overflow-y-auto">
+    <div className="border rounded-lg h-full min-h-0 overflow-auto">
       <table className="min-w-full text-sm table-fixed">
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 sticky top-0 z-20">
           <tr>
-            <th className="px-3 py-2 text-left w-[240px] sticky top-0 z-10 bg-gray-50">
+            <th className="px-3 py-2 text-left w-[240px] bg-gray-50">
               {groupBy}
             </th>
 
             {months.map((m) => (
-              <th
-                key={m}
-                className="px-3 py-2 text-right w-[140px] sticky top-0 z-10 bg-gray-50"
-              >
+              <th key={m} className="px-3 py-2 text-right w-[140px] bg-gray-50">
                 {m}
               </th>
             ))}
 
-            <th className="px-3 py-2 text-right w-[160px] font-semibold text-blue-600 sticky top-0 z-10 bg-gray-50">
+            <th className="px-3 py-2 text-right w-[160px] font-semibold text-blue-600 bg-gray-50">
               Total
             </th>
           </tr>
@@ -94,8 +91,8 @@ const CostTable = ({ data, groupBy }) => {
           ))}
         </tbody>
 
-        <tfoot className="bg-gray-100">
-          <tr className="border-t font-semibold sticky bottom-0 z-10">
+        <tfoot className="bg-gray-100 sticky bottom-0 z-20">
+          <tr className="border-t font-semibold">
             <td className="px-3 py-2">Total</td>
 
             {months.map((m) => (
