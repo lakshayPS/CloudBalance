@@ -6,7 +6,6 @@ import img3 from "../../../../assets/addcust3.png";
 const AddCustomManagedPolicies = () => {
   return (
     <div className="bg-white border rounded-lg p-6 space-y-6">
-      {/* Step 1 */}
       <div className="flex gap-3 flex-wrap">
         <div className="flex ">
           <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold mr-2">
@@ -29,7 +28,6 @@ const AddCustomManagedPolicies = () => {
         </div>
       </div>
 
-      {/* Step 2 */}
       <div className="flex gap-3 flex-wrap">
         <div className="flex">
           <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold mr-2">
@@ -48,7 +46,6 @@ const AddCustomManagedPolicies = () => {
         </div>
       </div>
 
-      {/* Step 3 */}
       <div className="flex gap-3 flex-wrap">
         <div className="flex">
           <span className="w-7 h-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-semibold mr-2">
@@ -75,8 +72,6 @@ const AddCustomManagedPolicies = () => {
         </span>
         <p>Now, click on Add permissions</p>
       </div>
-
-      {/* AWS Screenshot */}
     </div>
   );
 };

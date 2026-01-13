@@ -4,14 +4,10 @@ import { fetchFilterOptions } from "../../../../actions";
 
 const ChartFilterPanel = ({ onReset }) => {
   const dispatch = useDispatch();
-  const { options } = useSelector((state) => state.filters); // redux holds API response
+  const { options } = useSelector((state) => state.filters);
 
   const [expandedFilter, setExpandedFilter] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
-
-  //   useEffect(() => {
-  //     dispatch(fetchFilterOptions());
-  //   }, [dispatch]);
 
   useEffect(() => {
     if (!options || Object.keys(options).length === 0) {

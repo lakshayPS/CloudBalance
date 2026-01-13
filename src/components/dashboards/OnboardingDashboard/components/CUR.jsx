@@ -39,7 +39,6 @@ const CUR = () => {
         </p>
       </div>
 
-      {/* Code block */}
       <div className="relative bg-gray-50 border rounded-md p-1 text-sm font-mono max-w-sm group cursor-pointer">
         <button
           onClick={() => copyToClipboard(resourceID)}

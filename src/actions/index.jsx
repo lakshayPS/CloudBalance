@@ -6,8 +6,6 @@ import {
   registerUser,
   update,
 } from "../services/authServices";
-import axios from "axios";
-import store from "../store";
 import { getAllFilterOptions } from "../services/chartServices";
 
 const isAuthError = (err) =>
@@ -47,7 +45,7 @@ export const addUser = (user) => async (dispatch) => {
     payload: response?.data,
   });
 
-  return response?.data; // important
+  return response?.data;
 };
 
 export const updateUser = (userId, userData) => async (dispatch) => {
@@ -127,11 +125,6 @@ export const SET_FILTER_OPTIONS = "SET_FILTER_OPTIONS";
 
 export const fetchFilterOptions = () => async (dispatch) => {
   try {
-    // const token = store.getState().auth.token;
-    // const response = await axios.get(
-    //   "http://localhost:8080/snowflake/get-filters",
-    //   { headers: { Authorization: `Bearer ${token}` } }
-    // );
     const response = await getAllFilterOptions();
 
     const data = response?.data?.options || {};

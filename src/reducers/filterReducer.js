@@ -11,6 +11,8 @@ export const filterReducer = (state = initialState, action) => {
         ...state,
         options: action.payload,
       };
+    case "LOGOUT":
+      return initialState;
     default:
       return state;
   }

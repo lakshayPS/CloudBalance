@@ -65,7 +65,7 @@ const Onboarding = () => {
       try {
         await createAccount(accountId, accountName, roleArn);
         toast.success("Account onboarded successfully");
-        handleCancel(); // reset after success
+        handleCancel();
       } catch (err) {
         toast.error(
           err?.status === 409

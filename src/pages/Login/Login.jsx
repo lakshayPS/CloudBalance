@@ -13,41 +13,6 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const token = useSelector((state) => state?.auth?.token);
-
-  // useEffect(() => {
-  //   if (token) {
-  //     navigate("/dashboard/user-management");
-  //   }
-  // }, [token, navigate]);
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await loginUser({
-  //       email: userEmail,
-  //       password: userPassword,
-  //     });
-
-  //     const { token, tokenType, email, role, userName } = response.data;
-
-  //     dispatch(
-  //       loginSuccess({
-  //         token,
-  //         tokenType,
-  //         email,
-  //         role,
-  //         userName,
-  //       })
-  //     );
-
-  //     toast.success("Login successful");
-  //     navigate("/dashboard/user-management");
-  //   } catch {
-  //     toast.error("Invalid Credentials");
-  //   }
-  // };
-
   const token = useSelector((state) => state?.auth?.token);
   const role = useSelector((state) => state?.auth?.role);
 
