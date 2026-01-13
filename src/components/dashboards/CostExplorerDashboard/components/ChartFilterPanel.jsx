@@ -1,94 +1,31 @@
-// const FILTERS = [
-//   "Service",
-//   "Instance Type",
-//   "Account ID",
-//   "Usage Type",
-//   "Platform",
-//   "Region",
-//   "Usage Type Group",
-//   "Purchase Option",
-//   "API Operation",
-//   "Resource",
-//   "Charge Type",
-//   "Availability Zone",
-//   "Tenancy",
-//   "Legal Entity",
-//   "Billing Entity",
-// ];
-
-// const ChartFilterPanel = ({ onReset }) => {
-//   return (
-//     <div className="h-full flex flex-col">
-//       <div className="flex items-center justify-between px-4 py-3 border-b">
-//         <span className="font-semibold">Filters</span>
-//         <button
-//           onClick={onReset}
-//           className="text-sm text-blue-600 hover:underline"
-//         >
-//           Reset All
-//         </button>
-//       </div>
-
-//       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 text-sm">
-//         {FILTERS.map((item) => (
-//           <div
-//             key={item}
-//             className="flex items-center justify-between py-2 border-b last:border-b-0"
-//           >
-//             <label className="flex items-center gap-2">
-//               <input type="checkbox" />
-//               {item}
-//             </label>
-//             <span className="text-xs text-gray-400">Include Only</span>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ChartFilterPanel;
-
-import { useState } from "react";
-
-const FILTERS = [
-  "Service",
-  "Instance Type",
-  "Account ID",
-  "Usage Type",
-  "Platform",
-  "Region",
-  "Usage Type Group",
-  "Purchase Option",
-  "API Operation",
-  "Resource",
-  "Charge Type",
-  "Availability Zone",
-  "Tenancy",
-  "Legal Entity",
-  "Billing Entity",
-];
-
-// Example options for demo (you can replace with real API data)
-const OPTIONS = {
-  Service: [
-    "Amazon API Gateway",
-    "Amazon Athena",
-    "Amazon CloudFront",
-    "Amazon Cognito",
-    "Amazon DynamoDB",
-    "Amazon EC2",
-  ],
-  "Instance Type": ["t2.micro", "t3.medium", "m5.large"],
-  "Account ID": ["123456789012", "210987654321"],
-  Platform: ["Linux", "Windows", "macOS"],
-  Region: ["us-east-1", "us-west-2", "eu-central-1"],
-  // Add other filter options here...
-};
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFilterOptions } from "../../../../actions";
 
 const ChartFilterPanel = ({ onReset }) => {
+  const dispatch = useDispatch();
+  const { options } = useSelector((state) => state.filters); // redux holds API response
+
   const [expandedFilter, setExpandedFilter] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({});
+
+  //   useEffect(() => {
+  //     dispatch(fetchFilterOptions());
+  //   }, [dispatch]);
+
+  useEffect(() => {
+    if (!options || Object.keys(options).length === 0) {
+      dispatch(fetchFilterOptions());
+    }
+  }, [dispatch, options]);
+
+  const FILTERS = Object.keys(options || {}).map((key) => ({
+    apiKey: key,
+    label: key
+      .split("_")
+      .map((w) => w[0] + w.slice(1).toLowerCase())
+      .join(" "),
+  }));
 
   const toggleFilter = (filter) => {
     setExpandedFilter(expandedFilter === filter ? null : filter);
@@ -116,7 +53,6 @@ const ChartFilterPanel = ({ onReset }) => {
 
   return (
     <div className="h-full flex flex-col border">
-      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b">
         <span className="font-semibold">Filters</span>
         <button
@@ -127,22 +63,19 @@ const ChartFilterPanel = ({ onReset }) => {
         </button>
       </div>
 
-      {/* Body */}
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 text-sm">
-        {FILTERS.map((filter) => (
-          <div key={filter} className="relative">
+        {FILTERS.map(({ apiKey, label }) => (
+          <div key={apiKey} className="relative">
             <div
               className="flex items-center justify-between py-2 cursor-pointer border-b last:border-b-0"
-              onClick={() => toggleFilter(filter)}
+              onClick={() => toggleFilter(apiKey)}
             >
-              <span>{filter}</span>
+              <span>{label}</span>
               <span className="text-xs text-gray-400">Include Only</span>
             </div>
 
-            {/* Dropdown */}
-            {expandedFilter === filter && (
+            {expandedFilter === apiKey && (
               <div className="absolute top-full left-0 w-full bg-white border rounded shadow-lg z-10 mt-1 p-3">
-                {/* Search */}
                 <input
                   type="text"
                   placeholder="Search..."
@@ -150,20 +83,19 @@ const ChartFilterPanel = ({ onReset }) => {
                   onChange={(e) =>
                     setSelectedOptions((prev) => ({
                       ...prev,
-                      [`${filter}_search`]: e.target.value,
+                      [`${apiKey}_search`]: e.target.value,
                     }))
                   }
                 />
 
-                {/* Options */}
                 <div className="max-h-40 overflow-y-auto">
-                  {(OPTIONS[filter] || [])
+                  {(options[apiKey] || [])
                     .filter((opt) =>
                       opt
                         .toLowerCase()
                         .includes(
                           (
-                            selectedOptions[`${filter}_search`] || ""
+                            selectedOptions[`${apiKey}_search`] || ""
                           ).toLowerCase()
                         )
                     )
@@ -174,17 +106,16 @@ const ChartFilterPanel = ({ onReset }) => {
                       >
                         <input
                           type="checkbox"
-                          checked={(selectedOptions[filter] || []).includes(
+                          checked={(selectedOptions[apiKey] || []).includes(
                             option
                           )}
-                          onChange={() => toggleOption(filter, option)}
+                          onChange={() => toggleOption(apiKey, option)}
                         />
                         {option}
                       </label>
                     ))}
                 </div>
 
-                {/* Actions */}
                 <div className="flex justify-end gap-2 mt-2">
                   <button
                     className="px-3 py-1 border rounded hover:bg-gray-100"

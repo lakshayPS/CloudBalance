@@ -6,6 +6,9 @@ import {
   registerUser,
   update,
 } from "../services/authServices";
+import axios from "axios";
+import store from "../store";
+import { getAllFilterOptions } from "../services/chartServices";
 
 const isAuthError = (err) =>
   err.response?.status === 401 || err.response?.status === 403;
@@ -119,3 +122,38 @@ export const loginSuccess = (payload) => ({
   type: "LOGIN_SUCCESS",
   payload,
 });
+
+export const SET_FILTER_OPTIONS = "SET_FILTER_OPTIONS";
+
+export const fetchFilterOptions = () => async (dispatch) => {
+  try {
+    // const token = store.getState().auth.token;
+    // const response = await axios.get(
+    //   "http://localhost:8080/snowflake/get-filters",
+    //   { headers: { Authorization: `Bearer ${token}` } }
+    // );
+    const response = await getAllFilterOptions();
+
+    const data = response?.data?.options || {};
+    console.log("Fetched filter options:", data);
+
+    const formatted = {};
+    Object.keys(data).forEach((key) => {
+      const friendlyKey = key
+        .split("_")
+        .map((w) => w[0] + w.slice(1).toLowerCase())
+        .join(" ");
+      formatted[friendlyKey] = data[key];
+    });
+
+    dispatch({
+      type: SET_FILTER_OPTIONS,
+      payload: formatted,
+    });
+  } catch (err) {
+    if (!isAuthError(err)) {
+      toast.error("Failed to fetch filter options");
+    }
+    throw err;
+  }
+};

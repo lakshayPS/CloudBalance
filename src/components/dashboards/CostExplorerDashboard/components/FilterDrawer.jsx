@@ -20,7 +20,6 @@ const Checkbox = ({ label }) => (
 const FilterDrawer = ({ open }) => {
   return (
     <>
-      {/* Overlay (click-through disabled when closed) */}
       <div
         className={`
           fixed inset-0 bg-black/20 z-40 transition-opacity duration-300
@@ -32,7 +31,6 @@ const FilterDrawer = ({ open }) => {
         `}
       />
 
-      {/* Drawer */}
       <div
         className={`
           fixed top-0 right-0 z-50 h-screen w-[380px] bg-white shadow-xl
@@ -41,12 +39,10 @@ const FilterDrawer = ({ open }) => {
           flex flex-col
         `}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h2 className="text-lg font-semibold">Filters</h2>
         </div>
 
-        {/* Body */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
           <FilterSection title="Service">
             <Checkbox label="Amazon EC2" />
@@ -67,11 +63,6 @@ const FilterDrawer = ({ open }) => {
             <Checkbox label="us-east-1" />
             <Checkbox label="ap-south-1" />
           </FilterSection>
-        </div>
-
-        {/* Footer */}
-        <div className="px-4 py-3 border-t text-right text-sm text-gray-500">
-          Click ⚙️ again to close
         </div>
       </div>
     </>

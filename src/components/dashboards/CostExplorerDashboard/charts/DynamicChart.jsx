@@ -27,15 +27,12 @@ const DynamicChart = ({ type, data }) => {
       return;
     }
 
-    // Process months
     const months = [...new Set(data.map((d) => d.MONTH))]
       .sort()
       .map((m) => ({ label: m }));
 
-    // Process groups
     const groups = [...new Set(data.map((d) => d.GROUP_FIELD))];
 
-    // Build dataset
     const dataset = groups.map((grp) => ({
       seriesname: grp != null ? String(grp) : "Unknown",
       data: months.map((month) => {
@@ -46,7 +43,6 @@ const DynamicChart = ({ type, data }) => {
       }),
     }));
 
-    // Top 4 + Others logic
     const datasetWithTotal = dataset.map((d) => ({
       ...d,
       total: d.data.reduce((sum, m) => sum + Number(m.value), 0),
