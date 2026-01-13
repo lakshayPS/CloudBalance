@@ -1,7 +1,7 @@
 export const PRIMARY_GROUP_BY = [
   { label: "Service", value: "SERVICE" },
   { label: "Instance Type", value: "INSTANCE_TYPE" },
-  { label: "Account ID", value: "ACCOUNT_ID" },
+  // { label: "Account ID", value: "ACCOUNT_ID" },
   { label: "Usage Type", value: "USAGE_TYPE" },
   { label: "Platform", value: "PLATFORM" },
   { label: "Region", value: "REGION" },
