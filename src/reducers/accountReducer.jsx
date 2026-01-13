@@ -1,5 +1,6 @@
 const initialState = {
   list: [],
+  selectedAccount: null,
 };
 
 export const accountReducer = (state = initialState, action) => {
@@ -8,6 +9,11 @@ export const accountReducer = (state = initialState, action) => {
       return {
         ...state,
         list: action.payload || [],
+      };
+    case "SET_SELECTED_ACCOUNT":
+      return {
+        ...state,
+        selectedAccount: action.payload,
       };
     case "LOGOUT":
       return initialState;

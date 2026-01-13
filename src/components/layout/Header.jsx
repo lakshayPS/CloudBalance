@@ -3,7 +3,6 @@ import CloudKeeper from "../../assets/CloudKeeper.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { Menu, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +11,6 @@ import { persistor } from "../../store";
 
 const Header = ({ toggleSidebar }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedMenu, setSelectedMenu] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,14 +19,20 @@ const Header = ({ toggleSidebar }) => {
 
   const userName = useSelector((state) => state?.auth?.userName);
   const accountsFromStore = useSelector((state) => state?.accounts?.list ?? []);
+  console.log("accountNames: ", accountsFromStore);
 
-  const accountNames = accountsFromStore.map((acc) => acc.accName);
+  const selectedAccount = useSelector(
+    (state) => state?.accounts?.selectedAccount
+  );
 
   useEffect(() => {
-    if (accountNames.length > 0 && !selectedMenu) {
-      setSelectedMenu(accountNames[0]);
+    if (!selectedAccount && accountsFromStore.length > 0) {
+      dispatch({
+        type: "SET_SELECTED_ACCOUNT",
+        payload: accountsFromStore[0],
+      });
     }
-  }, [accountNames, selectedMenu]);
+  }, [accountsFromStore, selectedAccount, dispatch]);
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -38,8 +42,12 @@ const Header = ({ toggleSidebar }) => {
     setAnchorEl(null);
   };
 
-  const handleSelect = (value) => {
-    setSelectedMenu(value);
+  const handleSelect = (account) => {
+    dispatch({
+      type: "SET_SELECTED_ACCOUNT",
+      payload: account,
+    });
+
     setAnchorEl(null);
   };
 
@@ -69,9 +77,9 @@ const Header = ({ toggleSidebar }) => {
             <div className="flex items-center gap-1 min-w-0">
               <p
                 className="max-w-[160px] truncate whitespace-nowrap overflow-hidden"
-                title={selectedMenu}
+                title={selectedAccount?.accName}
               >
-                {selectedMenu || "Loading..."}
+                {selectedAccount?.accName || "Select Account"}
               </p>
 
               <ArrowDropDownIcon
@@ -90,14 +98,14 @@ const Header = ({ toggleSidebar }) => {
                   },
                 }}
               >
-                {accountNames.map((name, index) => (
+                {accountsFromStore.map((acc) => (
                   <MenuItem
-                    key={index}
-                    onClick={() => handleSelect(name)}
-                    title={name}
+                    key={acc.accId}
+                    onClick={() => handleSelect(acc)}
+                    title={acc.accName}
                   >
-                    <span className="block max-w-[230px] truncate whitespace-nowrap">
-                      {name}
+                    <span className="block max-w-[230px] truncate">
+                      {acc.accName}
                     </span>
                   </MenuItem>
                 ))}
@@ -117,9 +125,12 @@ const Header = ({ toggleSidebar }) => {
 
           <div>
             <p>Welcome,</p>
-            <p className="text-blue-600 font-bold flex items-center gap-1">
-              {userName || "User"}
-              <InfoOutlinedIcon className="cursor-pointer" />
+
+            <p
+              title={userName}
+              className="text-blue-600 font-bold flex items-center gap-1"
+            >
+              {userName || "Loading..."}
             </p>
           </div>
         </div>

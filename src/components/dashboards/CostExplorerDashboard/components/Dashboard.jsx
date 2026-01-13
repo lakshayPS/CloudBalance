@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import MonthRangePicker from "./MonthRangePicker";
 import ChartFilterPanel from "./ChartFilterPanel";
 import TuneIcon from "@mui/icons-material/Tune";
+import { useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [groupBy, setGroupBy] = useState("SERVICE");
@@ -18,6 +19,9 @@ const Dashboard = () => {
   const [toMonth, setToMonth] = useState(dayjs().endOf("month"));
   const [chartData, setChartData] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const selectedAccount = useSelector(
+    (state) => state.accounts.selectedAccount
+  );
 
   const getChartType = () => {
     switch (selectedChart) {
@@ -47,7 +51,17 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    if (!selectedAccount) {
+      setChartData([]);
+      setTableData(null);
+      return;
+    }
+
+    setChartData([]);
+    setTableData(null);
+
     const params = {
+      accountId: selectedAccount.accId,
       groupBy,
       fromYear: fromMonth.year(),
       fromMonth: fromMonth.month() + 1,
@@ -60,7 +74,7 @@ const Dashboard = () => {
       setTableData(buildFullCostTable(data));
       setChartData(data);
     });
-  }, [groupBy, fromMonth, toMonth]);
+  }, [groupBy, fromMonth, toMonth, selectedAccount]);
 
   return (
     <div className="h-screen flex flex-col bg-white">

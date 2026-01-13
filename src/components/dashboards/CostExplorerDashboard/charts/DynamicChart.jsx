@@ -33,14 +33,16 @@ const DynamicChart = ({ type, data }) => {
 
     const groups = [...new Set(data.map((d) => d.GROUP_FIELD))];
 
+    const dataMap = {};
+    data.forEach((d) => {
+      dataMap[`${d.GROUP_FIELD}_${d.MONTH}`] = d.TOTAL_COST;
+    });
+
     const dataset = groups.map((grp) => ({
       seriesname: grp != null ? String(grp) : "Unknown",
-      data: months.map((month) => {
-        const item = data.find(
-          (d) => d.GROUP_FIELD === grp && d.MONTH === month.label
-        );
-        return { value: item?.TOTAL_COST ?? 0 };
-      }),
+      data: months.map((month) => ({
+        value: dataMap[`${grp}_${month.label}`] ?? 0,
+      })),
     }));
 
     const datasetWithTotal = dataset.map((d) => ({
