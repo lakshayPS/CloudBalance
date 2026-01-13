@@ -100,7 +100,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {tableData && <CostTable data={tableData} />}
+            {tableData && <CostTable data={tableData} groupBy={groupBy} />}
           </div>
 
           <div

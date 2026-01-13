@@ -1,5 +1,3 @@
-import { ClipboardIcon } from "@heroicons/react/24/outline";
-import React from "react";
 import ContentCopyTwoToneIcon from "@mui/icons-material/ContentCopyTwoTone";
 import img1 from "../../../../assets/cur1.png";
 import img2 from "../../../../assets/cur2.png";

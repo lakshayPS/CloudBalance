@@ -1,8 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-import { AlignHorizontalCenter } from "@mui/icons-material";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { Tooltip } from "@mui/material";
 
 const paginationModel = { page: 0, pageSize: 5 };
 
