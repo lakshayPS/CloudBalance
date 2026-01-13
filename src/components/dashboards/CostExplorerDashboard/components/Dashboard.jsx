@@ -6,6 +6,8 @@ import { getMonthlyCostByGroup } from "../../../../services/chartServices";
 import CostTable, { buildFullCostTable } from "./CostTable";
 import dayjs from "dayjs";
 import MonthRangePicker from "./MonthRangePicker";
+import ChartFilterPanel from "./ChartFilterPanel";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const Dashboard = () => {
   const [groupBy, setGroupBy] = useState("SERVICE");
@@ -15,6 +17,7 @@ const Dashboard = () => {
   const [fromMonth, setFromMonth] = useState(dayjs().startOf("month"));
   const [toMonth, setToMonth] = useState(dayjs().endOf("month"));
   const [chartData, setChartData] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const getChartType = () => {
     switch (selectedChart) {
@@ -76,14 +79,40 @@ const Dashboard = () => {
             />
 
             <ToggleButtons setSelectedChart={setSelectedChart} />
+
+            <div className="border-2 border-r-2 border-blue-700">
+              <TuneIcon
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+                className="text-[28px] cursor-pointer hover:text-gray-700"
+                title="Filters"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="p-4 border rounded-lg shadow-sm mb-4">
-          <DynamicChart type={getChartType()} data={chartData} />
-        </div>
+        <div className="flex flex-1 min-w-0 gap-0">
+          <div className="flex-1 min-w-0 transition-all duration-300">
+            <div className="border rounded-lg shadow-sm mb-4 overflow-hidden">
+              <div className="h-[520px]">
+                <div className="p-4 h-full">
+                  <DynamicChart type={getChartType()} data={chartData} />
+                </div>
+              </div>
+            </div>
 
-        {tableData && <CostTable data={tableData} />}
+            {tableData && <CostTable data={tableData} />}
+          </div>
+
+          <div
+            className={`
+              transition-all duration-300 ease-in-out
+              ${isFilterOpen ? "w-[360px]" : "w-0"}
+              overflow-hidden shrink-0 border-l bg-white
+          `}
+          >
+            <ChartFilterPanel onReset={() => console.log("reset filters")} />
+          </div>
+        </div>
       </div>
     </div>
   );
