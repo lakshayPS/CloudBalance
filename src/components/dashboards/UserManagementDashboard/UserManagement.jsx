@@ -220,18 +220,7 @@ const UserManagement = ({ mode, selectedRow, handleClose }) => {
                     onChange={() => handleAccountToggle(acc.accId)}
                   />
 
-                  <span className="text-sm">
-                    {acc.accName}
-                    <span
-                      className={`ml-2 text-xs font-semibold ${
-                        acc.accStatus === "ORPHANED"
-                          ? "text-green-600"
-                          : "text-orange-600"
-                      }`}
-                    >
-                      ({acc.accStatus})
-                    </span>
-                  </span>
+                  <span className="text-sm">{acc.accName}</span>
                 </div>
               ))}
             </div>
