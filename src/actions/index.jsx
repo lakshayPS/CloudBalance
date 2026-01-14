@@ -128,7 +128,6 @@ export const fetchFilterOptions = () => async (dispatch) => {
     const response = await getAllFilterOptions();
 
     const data = response?.data?.options || {};
-    console.log("Fetched filter options:", data);
 
     const formatted = {};
     Object.keys(data).forEach((key) => {

@@ -39,7 +39,6 @@ const ChartFilterPanel = ({ onReset }) => {
   };
 
   const handleApply = () => {
-    console.log("Selected filters:", selectedOptions);
     setExpandedFilter(null);
   };
 

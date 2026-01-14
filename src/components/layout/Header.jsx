@@ -19,7 +19,6 @@ const Header = ({ toggleSidebar }) => {
 
   const userName = useSelector((state) => state?.auth?.userName);
   const accountsFromStore = useSelector((state) => state?.accounts?.list ?? []);
-  console.log("accountNames: ", accountsFromStore);
 
   const selectedAccount = useSelector(
     (state) => state?.accounts?.selectedAccount

@@ -20,12 +20,6 @@ export const getAllOnboardedAccounts = () => {
   return api.get("/api/accounts/getAllAccounts");
 };
 
-export const assignAccountsToUser = (userId, accIds) => {
-  return api.post(`/api/accounts/users/${userId}/assign-accounts`, {
-    accIds,
-  });
-};
-
 export const getAssignedAccountsByUserId = (userId) => {
   return api.get(`/api/accounts/users/${userId}/accounts`);
 };
