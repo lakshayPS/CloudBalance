@@ -97,8 +97,7 @@ function App() {
               }
             />
           </Route>
-
-          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="*" element={<Unauthorized />} />
         </Routes>
       </BrowserRouter>
 
