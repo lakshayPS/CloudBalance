@@ -1,8 +1,10 @@
 const Unauthorized = () => {
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <h1 className="text-2xl font-bold text-red-600">403</h1>
-      <p>You do not have permission to access this page.</p>
+      <img
+        src="https://www.digitalmesh.com/blog/wp-content/uploads/2020/05/404-error.jpg"
+        alt="404 NOT FOUND"
+      />
     </div>
   );
 };
